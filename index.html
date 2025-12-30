@@ -26,11 +26,16 @@ overflow:hidden
 .slides{
 height:220px;
 position:relative;
-overflow:hidden
+overflow:hidden;
+background:#fff;
 }
+
 .slides img{
-width:100%;height:100%;
-object-fit:cover
+width:100%;
+height:100%;
+object-fit:contain;     /* 🔥 ZOOM FIX */
+transition:0.3s ease;
+background:#fff;
 }
 
 .arrow{
@@ -48,14 +53,23 @@ font-size:18px
 .arrow.left{left:8px}
 .arrow.right{right:8px}
 
-.thumbs{display:flex;gap:6px;padding:8px}
+.thumbs{
+display:flex;
+gap:6px;
+padding:8px;
+justify-content:center
+}
+
 .thumbs img{
-width:55px;height:45px;
-object-fit:cover;
+width:55px;
+height:45px;
+object-fit:contain;   /* 🔥 thumbnail bhi proper */
 border-radius:6px;
 border:2px solid transparent;
-cursor:pointer
+cursor:pointer;
+background:#fff;
 }
+
 .thumbs img.active{border-color:#111}
 
 .meta{text-align:center;padding:10px}
@@ -93,8 +107,6 @@ from{transform:translateY(100%)}
 to{transform:translateY(0)}
 }
 
-.modal h3{text-align:center;margin-bottom:10px}
-
 label{font-size:13px;font-weight:bold}
 input,select,textarea{
 width:100%;padding:10px;
@@ -102,11 +114,7 @@ border-radius:8px;border:1px solid #ccc;
 margin-bottom:8px;font-size:14px
 }
 textarea{resize:none;height:60px}
-
-.cancel{
-background:#e5e7eb;color:#111;
-margin-top:6px
-}
+.cancel{background:#e5e7eb;color:#111}
 </style>
 </head>
 
@@ -193,14 +201,13 @@ box.innerHTML+=`
 </div>`;
 });
 
-/* SLIDER FUNCTIONS */
+/* SLIDER */
 function update(i){
 document.getElementById("m"+i).src=products[i].imgs[slideIndex[i]];
 document.querySelectorAll(".thumbs")[i]
 .querySelectorAll("img")
 .forEach((t,j)=>t.classList.toggle("active",j===slideIndex[i]));
 }
-
 function next(i){
 slideIndex[i]=(slideIndex[i]+1)%products[i].imgs.length;
 update(i);
@@ -214,13 +221,12 @@ slideIndex[i]=j;
 update(i);
 }
 
-/* AUTO SLIDE */
+/* AUTO SLIDE — 4 SECOND — LEFT */
 products.forEach((p,i)=>{
-setInterval(()=>next(i),3000);
+setInterval(()=>{ prev(i); },4000);
 });
 
 /* MOBILE SWIPE */
-document.addEventListener("DOMContentLoaded",()=>{
 document.querySelectorAll(".slides").forEach((s,i)=>{
 let x=0;
 s.addEventListener("touchstart",e=>x=e.touches[0].clientX);
@@ -228,7 +234,6 @@ s.addEventListener("touchend",e=>{
 let y=e.changedTouches[0].clientX;
 if(x-y>40) next(i);
 if(y-x>40) prev(i);
-});
 });
 });
 
