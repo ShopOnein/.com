@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>ShopOne.in</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body{margin:0;font-family:Arial;background:#f2f2f2}
 header{background:#fff;padding:12px;text-align:center;font-size:20px;font-weight:bold}
@@ -50,7 +51,7 @@ margin-top:6px;width:100%;padding:8px;
 background:#000;color:#fff;border:none;border-radius:8px
 }
 
-/* PRODUCT PAGE */
+/* DETAIL PAGE */
 .page{
 position:fixed;inset:0;background:#fff;
 overflow:auto;display:none;z-index:99
@@ -63,10 +64,7 @@ background:#000;color:#fff;border:none;
 padding:6px 10px;border-radius:6px
 }
 
-.review-box{padding:15px}
-.review{
-border-bottom:1px solid #eee;padding:10px 0
-}
+.review{border-bottom:1px solid #eee;padding:8px 0}
 .name{font-weight:bold}
 .verified{color:green;font-size:12px}
 .date{font-size:11px;color:#777}
@@ -76,10 +74,8 @@ border-bottom:1px solid #eee;padding:10px 0
 <body>
 
 <header>ShopOne.in</header>
-
 <div class="grid" id="list"></div>
 
-<!-- PRODUCT DETAIL -->
 <div class="page" id="detail">
 <button class="close" onclick="closePage()">X</button>
 <div id="detailContent"></div>
@@ -87,23 +83,47 @@ border-bottom:1px solid #eee;padding:10px 0
 
 <script>
 const products=[
-{name:"Urban Sneakers",off:"65%",mrp:999,price:249,imgs:["https://picsum.photos/400?1","https://picsum.photos/400?2"]},
-{name:"Fancy Shoes",off:"60%",mrp:1099,price:259,imgs:["https://picsum.photos/400?3","https://picsum.photos/400?4"]},
-{name:"Classic Wear",off:"62%",mrp:1049,price:249,imgs:["https://picsum.photos/400?5","https://picsum.photos/400?6"]},
-{name:"Sporty Look",off:"64%",mrp:1249,price:262,imgs:["https://picsum.photos/400?7","https://picsum.photos/400?8"]},
-{name:"Denim Shoes",off:"61%",mrp:990,price:241,imgs:["https://picsum.photos/400?9","https://picsum.photos/400?10"]},
-{name:"Daily Comfort",off:"63%",mrp:1150,price:255,imgs:["https://picsum.photos/400?11","https://picsum.photos/400?12"]}
+{
+name:"Urban Sneakers",
+off:"65%",mrp:999,price:249,
+imgs:["images/urban-1111.jpg","images/urban-2222.jpg","images/urban-3333.jpg"]
+},
+{
+name:"Fancy Shoes",
+off:"60%",mrp:1099,price:259,
+imgs:["images/fancy-11.jpg","images/fancy-22.jpg","images/fancy-33.jpg"]
+},
+{
+name:"Classic Wear",
+off:"62%",mrp:1049,price:249,
+imgs:["images/classic-111.jpg","images/classic-222.jpg","images/classic-333.jpg"]
+},
+{
+name:"Sporty Look",
+off:"64%",mrp:1249,price:262,
+imgs:["images/sporty-11111.jpg","images/sporty-22222.jpg","images/sporty-33333.jpg"]
+},
+{
+name:"Denim Shoes",
+off:"61%",mrp:990,price:241,
+imgs:["images/denim-111111.jpg","images/denim-222222.jpg","images/denim-333333.jpg"]
+},
+{
+name:"Daily Comfort",
+off:"63%",mrp:1150,price:255,
+imgs:["images/daily-1.jpg","images/daily-2.jpg","images/daily-3.jpg"]
+}
 ];
 
 const list=document.getElementById("list");
 
 products.forEach((p,i)=>{
+let imgsHTML=p.imgs.map((img,j)=>`<img src="${img}" class="${j==0?'active':''}">`).join("");
 list.innerHTML+=`
 <div class="card">
 <div class="slider">
 <span class="badge">${p.off} OFF</span>
-<img src="${p.imgs[0]}" class="active" id="img${i}">
-<img src="${p.imgs[1]}">
+${imgsHTML}
 <button class="arrow left" onclick="slide(${i},-1)">‹</button>
 <button class="arrow right" onclick="slide(${i},1)">›</button>
 </div>
@@ -116,21 +136,16 @@ list.innerHTML+=`
 </div>`;
 });
 
-/* SLIDE */
 function slide(i,d){
-let imgs=list.querySelectorAll(".card")[i].querySelectorAll("img");
+let imgs=list.children[i].querySelectorAll("img");
 let a=[...imgs].findIndex(x=>x.classList.contains("active"));
 imgs[a].classList.remove("active");
 let n=(a+d+imgs.length)%imgs.length;
 imgs[n].classList.add("active");
 }
 
-/* AUTO */
-setInterval(()=>{
-products.forEach((_,i)=>slide(i,1));
-},4000);
+setInterval(()=>products.forEach((_,i)=>slide(i,1)),4000);
 
-/* DETAIL PAGE */
 function openPage(i){
 let p=products[i];
 detail.style.display="block";
@@ -140,13 +155,7 @@ detailContent.innerHTML=`
 <h3>${p.name}</h3>
 <div class="stars">★★★★☆</div>
 <p><b>₹${p.price}</b> <span class="old">M.R.P ₹${p.mrp}</span></p>
-<p>✔ Free Delivery<br>✔ Fast Delivery within 7 Working Days</p>
-
-<h3>Customer Reviews</h3>
-<div class="review-box">
-${reviews()}
-</div>
-
+<p>✔ Free Delivery<br>✔ Delivery in 7 Working Days</p>
 <button class="btn" onclick="order('${p.name}')">Order on WhatsApp</button>
 </div>`;
 }
@@ -154,19 +163,7 @@ ${reviews()}
 function closePage(){detail.style.display="none"}
 
 function order(name){
-window.open(`https://wa.me/91XXXXXXXXXX?text=Order%20for%20${name}`);
-}
-
-function reviews(){
-return `
-<div class="review"><div class="name">Anonymous <span class="verified">✔ Verified</span></div>★★★★☆<div class="date">11/16/2025</div>Best Quality</div>
-<div class="review"><div class="name">Ashish Yadav <span class="verified">✔</span></div>★★★★☆<div class="date">11/03/2025</div>Best</div>
-<div class="review"><div class="name">Priyanka Ankit ✔</div>★★★★☆<div class="date">10/18/2025</div>Very comfortable</div>
-<div class="review"><div class="name">Bittu ✔</div>★★★★☆<div class="date">10/18/2025</div>Nice shoes</div>
-<div class="review"><div class="name">Anonymous ✔</div>★★★★☆<div class="date">10/12/2025</div>Value for money</div>
-<div class="review"><div class="name">Rohit ✔</div>★★★★☆<div class="date">10/09/2025</div>Looks premium</div>
-<div class="review"><div class="name">Neha ✔</div>★★★★☆<div class="date">10/07/2025</div>Comfortable</div>
-<div class="review"><div class="name">Suresh ✔</div>★★★★☆<div class="date">10/01/2025</div>Good purchase</div>`;
+window.open("https://wa.me/917879266424?text=Order%20for%20"+name);
 }
 </script>
 
