@@ -5,62 +5,96 @@
 <title>ShopOne.in</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 body{margin:0;font-family:Arial;background:#f2f2f2}
-header{background:#fff;padding:12px;text-align:center;font-size:20px;font-weight:bold}
-
+header{
+background:#fff;padding:12px;text-align:center;
+font-size:20px;font-weight:bold;
+display:flex;justify-content:space-between;align-items:center
+}
+header button{
+background:#000;color:#fff;border:none;
+padding:6px 10px;border-radius:6px;font-size:12px
+}
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
 gap:12px;padding:12px
 }
-
 .card{
 background:#fff;border-radius:12px;overflow:hidden;
 box-shadow:0 2px 8px rgba(0,0,0,.08);
-cursor:pointer
+cursor:pointer;position:relative
 }
-
 .card img{
-width:100%;
-height:180px;
-object-fit:cover
+width:100%;height:180px;object-fit:cover
 }
-
 .badge{
 position:absolute;top:8px;right:8px;
 background:#dc2626;color:#fff;font-size:11px;
 padding:4px 8px;border-radius:12px
 }
-
+.like{
+position:absolute;top:8px;left:8px;
+font-size:20px;color:#ccc
+}
+.like.active{color:red}
 .info{padding:10px}
 .title{font-size:14px;font-weight:bold}
 .stars{color:#f59e0b;font-size:13px}
 .price{font-size:14px}
 .old{color:#777;text-decoration:line-through;font-size:12px}
 
-/* DETAIL PAGE */
 .page{
 position:fixed;inset:0;background:#fff;
 overflow:auto;display:none;z-index:99
 }
-
 .close{
 position:fixed;top:10px;right:10px;
 background:#000;color:#fff;border:none;
 padding:6px 10px;border-radius:6px
 }
-
 .btn{
 margin-top:10px;width:100%;padding:10px;
 background:#000;color:#fff;border:none;border-radius:8px
+}
+
+/* Footer */
+footer{
+background:#000;color:#fff;
+padding:20px;text-align:center;margin-top:20px
+}
+footer i{
+font-size:22px;margin:0 10px;color:#fff
+}
+footer a{text-decoration:none}
+
+/* Popup */
+.popup{
+position:fixed;inset:0;background:rgba(0,0,0,.5);
+display:none;align-items:center;justify-content:center;z-index:200
+}
+.popup div{
+background:#fff;padding:20px;border-radius:10px;width:80%;max-width:300px
+}
+.popup input{
+width:100%;padding:8px;margin-bottom:10px
 }
 </style>
 </head>
 
 <body>
 
-<header>ShopOne.in</header>
+<header>
+<span>ShopOne.in</span>
+<div>
+<button onclick="openLogin()">Sign In</button>
+<button onclick="openLogin()">Sign Up</button>
+</div>
+</header>
 
 <div class="grid" id="list"></div>
 
@@ -69,38 +103,40 @@ background:#000;color:#fff;border:none;border-radius:8px
 <div id="detailContent"></div>
 </div>
 
+<!-- Login Popup -->
+<div class="popup" id="loginBox">
+<div>
+<h3>Sign In / Sign Up</h3>
+<input placeholder="Mobile / Email">
+<input placeholder="Password" type="password">
+<button class="btn" onclick="closeLogin()">Submit</button>
+</div>
+</div>
+
+<footer>
+<p>Support</p>
+<a href="#"><i class="fab fa-facebook"></i></a>
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="https://wa.me/917879266424"><i class="fab fa-whatsapp"></i></a>
+<a href="mailto:support@shopone.in"><i class="fa fa-envelope"></i></a>
+<p style="font-size:12px;margin-top:10px">© ShopOne.in</p>
+</footer>
+
 <script>
 const products=[
-{
-name:"Urban Sneakers",
-off:"65%",mrp:999,price:249,
-img:"images/1111.jpg"
-},
-{
-name:"Fancy Shoes",
-off:"60%",mrp:1099,price:259,
-img:"images/11.jpg"
-},
-{
-name:"Classic Wear",
-off:"62%",mrp:1049,price:249,
-img:"images/111.jpg"
-},
-{
-name:"Sporty Look",
-off:"64%",mrp:1249,price:262,
-img:"images/11111.jpg"
-},
-{
-name:"Denim Shoes",
-off:"61%",mrp:990,price:241,
-img:"images/111111.jpg"
-},
-{
-name:"Daily Comfort",
-off:"63%",mrp:1150,price:255,
-img:"images/1.jpg"
-}
+{name:"Premium Boss Edition",price:249,mrp:999,off:"65%",img:"images/Premium Boss Edition.jpg"},
+{name:"Royal Polo Classic (Tan)",price:259,mrp:1099,off:"60%",img:"images/Royal Polo Classic (Tan).jpg"},
+{name:"Royal Polo Classic (Black)",price:249,mrp:1049,off:"62%",img:"images/Royal Polo Classic (Black).jpg"},
+{name:"Starry Denim Sneaker",price:262,mrp:1249,off:"64%",img:"images/Starry Denim Sneaker.jpg"},
+{name:"Jumpman Street-Vibe",price:241,mrp:990,off:"61%",img:"images/Jumpman Street-Vibe.jpg"},
+{name:"Classic Fashion Navy",price:255,mrp:1150,off:"63%",img:"images/Classic Fashion Navy.jpg"},
+{name:"Red-Strip Comfort Slip-on",price:269,mrp:1299,off:"66%",img:"images/Red-Strip Comfort Slip-on.jpg"},
+{name:"Urban Black Swoosh",price:245,mrp:999,off:"65%",img:"images/Urban Black Swoosh.jpg"},
+{name:"Triple-Strap Easy Wear",price:259,mrp:1199,off:"64%",img:"images/Triple-Strap Easy Wear.jpg"},
+{name:"Elite Knitted Loafer",price:239,mrp:899,off:"63%",img:"images/Elite Knitted Loafer.jpg"},
+{name:"Rugged Denim Walker",price:279,mrp:1399,off:"68%",img:"images/Rugged Denim Walker.jpg"},
+{name:"Blue Wave Slip-on",price:249,mrp:1099,off:"65%",img:"images/Blue Wave Slip-on.jpg"},
+{name:"Active Sports Blue",price:269,mrp:1299,off:"67%",img:"images/Active Sports Blue.jpg"}
 ];
 
 const list=document.getElementById("list");
@@ -108,6 +144,7 @@ const list=document.getElementById("list");
 products.forEach((p,i)=>{
 list.innerHTML+=`
 <div class="card" onclick="openPage(${i})">
+<i class="fa fa-heart like" onclick="event.stopPropagation();this.classList.toggle('active')"></i>
 <div style="position:relative">
 <img src="${p.img}">
 <span class="badge">${p.off} OFF</span>
@@ -133,12 +170,12 @@ detailContent.innerHTML=`
 <button class="btn" onclick="order('${p.name}')">Order on WhatsApp</button>
 </div>`;
 }
-
 function closePage(){detail.style.display="none"}
-
 function order(name){
 window.open("https://wa.me/917879266424?text=Order%20for%20"+name);
 }
+function openLogin(){loginBox.style.display="flex"}
+function closeLogin(){loginBox.style.display="none"}
 </script>
 
 </body>
