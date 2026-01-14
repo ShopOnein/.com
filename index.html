@@ -11,57 +11,48 @@
 body{margin:0;font-family:Arial;background:#f2f2f2}
 header{background:#fff;padding:12px;text-align:center;font-size:20px;font-weight:bold}
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:12px;padding:12px
+.rating-box{
+display:flex;gap:15px;margin:15px 0;
+border:1px solid #e5e7eb;padding:12px;border-radius:10px;font-size:13px
 }
+.rating-score{min-width:90px}
+.rating-score b{font-size:18px}
+.rating-bars{flex:1}
+.rating-bars .row{
+display:flex;align-items:center;gap:6px;margin:4px 0;font-size:12px
+}
+.rating-bars .bar{
+flex:1;height:6px;background:#e5e7eb;border-radius:10px;overflow:hidden
+}
+.rating-bars .fill{height:100%;background:#22c55e}
 
-.card{
-background:#fff;border-radius:12px;overflow:hidden;
-box-shadow:0 2px 8px rgba(0,0,0,.08);
-cursor:pointer
-}
+.review{background:#f9fafb;padding:10px;border-radius:8px;margin-top:10px;font-size:13px}
 
-.card img{
-width:100%;
-aspect-ratio:1/1;
-object-fit:cover
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:12px}
+
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
+
+.card img{width:100%;aspect-ratio:1/1;object-fit:cover}
 
 .badge{
 position:absolute;top:8px;right:8px;
-background:#dc2626;color:#fff;font-size:11px;
-padding:4px 8px;border-radius:12px
+background:#dc2626;color:#fff;font-size:11px;padding:4px 8px;border-radius:12px
 }
 
 .info{padding:10px}
 .title{font-size:14px;font-weight:bold}
 
-.stars{
-color:#f59e0b;
-font-size:13px;
-display:flex;
-align-items:center;
-gap:6px
-}
-.stars span{
-color:#555;
-font-size:12px
-}
+.stars{color:#f59e0b;font-size:13px;display:flex;align-items:center;gap:6px}
+.stars span{color:#555;font-size:12px}
 
 .price{font-size:14px}
 .old{color:#777;text-decoration:line-through;font-size:12px}
 
-.page{
-position:fixed;inset:0;background:#fff;
-overflow:auto;display:none;z-index:99
-}
+.page{position:fixed;inset:0;background:#fff;overflow:auto;display:none;z-index:99}
 
 .close{
 position:fixed;top:10px;right:10px;
-background:#000;color:#fff;border:none;
-padding:6px 10px;border-radius:6px
+background:#000;color:#fff;border:none;padding:6px 10px;border-radius:6px
 }
 
 .btn{
@@ -69,10 +60,7 @@ margin-top:10px;width:100%;padding:10px;
 background:#000;color:#fff;border:none;border-radius:8px
 }
 
-footer{
-background:#000;color:#fff;text-align:center;
-padding:20px 10px;margin-top:20px
-}
+footer{background:#000;color:#fff;text-align:center;padding:20px 10px;margin-top:20px}
 footer i{font-size:22px;margin:0 10px;color:#fff}
 footer p{margin-top:12px;font-size:13px;color:#ccc}
 </style>
@@ -98,34 +86,34 @@ footer p{margin-top:12px;font-size:13px;color:#ccc}
 </footer>
 
 <script>
-function getStars(){
-const ratings=[
-'<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>',
-'<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>',
-'<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>'
-];
-return ratings[Math.floor(Math.random()*ratings.length)];
+function starsHTML(r){
+let full=Math.floor(r), half=r%1>=0.5;
+let html="";
+for(let i=0;i<full;i++) html+='<i class="fa-solid fa-star"></i>';
+if(half) html+='<i class="fa-solid fa-star-half-stroke"></i>';
+while(html.split("star").length-1<5) html+='<i class="fa-regular fa-star"></i>';
+return html;
 }
 
-const products = [
-  {name:"Premium Boss Edition",price:249,mrp:1049,off:"76%",rating:583,img:"images/Premium Boss Edition.jpg"},
-  {name:"Royal Polo Classic (Tan)",price:250,mrp:1075,off:"77%",rating:712,img:"images/Royal Polo Classic (Tan).jpg"},
-  {name:"Royal Polo Classic (Black)",price:245,mrp:1049,off:"77%",rating:648,img:"images/Royal Polo Classic (Black).jpg"},
-  {name:"Starry Denim Sneaker",price:249,mrp:1075,off:"77%",rating:531,img:"images/Starry Denim Sneaker.jpg"},
-  {name:"Jumpman Street-Vibe",price:245,mrp:1000,off:"76%",rating:783,img:"images/Jumpman Street-Vibe.jpg"},
-  {name:"Classic Fashion Navy",price:249,mrp:1049,off:"76%",rating:614,img:"images/Classic Fashion Navy.jpg"},
-  {name:"Red-Strip Comfort Slip-on",price:250,mrp:1075,off:"77%",rating:759,img:"images/Red-Strip Comfort Slip-on.jpg"},
-  {name:"Urban Black Swoosh",price:245,mrp:1000,off:"76%",rating:701,img:"images/Urban Black Swoosh.jpg"},
-  {name:"Triple-Strap Easy Wear",price:249,mrp:1049,off:"76%",rating:688,img:"images/Triple-Strap Easy Wear.jpg"},
-  {name:"Elite Knitted Loafer",price:245,mrp:1000,off:"76%",rating:529,img:"images/Elite Knitted Loafer.jpg"},
-  {name:"Rugged Denim Walker",price:250,mrp:1075,off:"77%",rating:602,img:"images/Rugged Denim Walker.jpg"},
-  {name:"Blue Wave Slip-on",price:249,mrp:1049,off:"76%",rating:547,img:"images/Blue Wave Slip-on.jpg"},
-  {name:"Active Sports Blue",price:250,mrp:1075,off:"77%",rating:768,img:"images/Active Sports Blue.jpg"}
+const products=[
+{name:"Premium Boss Edition",price:249,mrp:1049,off:"76%",ratingCount:583,ratingValue:4.0,img:"images/Premium Boss Edition.jpg"},
+{name:"Royal Polo Classic (Tan)",price:250,mrp:1075,off:"77%",ratingCount:712,ratingValue:4.2,img:"images/Royal Polo Classic (Tan).jpg"},
+{name:"Royal Polo Classic (Black)",price:245,mrp:1049,off:"77%",ratingCount:648,ratingValue:4.1,img:"images/Royal Polo Classic (Black).jpg"},
+{name:"Starry Denim Sneaker",price:249,mrp:1075,off:"77%",ratingCount:531,ratingValue:3.9,img:"images/Starry Denim Sneaker.jpg"},
+{name:"Jumpman Street-Vibe",price:245,mrp:1000,off:"76%",ratingCount:783,ratingValue:4.3,img:"images/Jumpman Street-Vibe.jpg"},
+{name:"Classic Fashion Navy",price:249,mrp:1049,off:"76%",ratingCount:614,ratingValue:4.0,img:"images/Classic Fashion Navy.jpg"},
+{name:"Red-Strip Comfort Slip-on",price:250,mrp:1075,off:"77%",ratingCount:759,ratingValue:4.4,img:"images/Red-Strip Comfort Slip-on.jpg"},
+{name:"Urban Black Swoosh",price:245,mrp:1000,off:"76%",ratingCount:701,ratingValue:4.2,img:"images/Urban Black Swoosh.jpg"},
+{name:"Triple-Strap Easy Wear",price:249,mrp:1049,off:"76%",ratingCount:688,ratingValue:4.1,img:"images/Triple-Strap Easy Wear.jpg"},
+{name:"Elite Knitted Loafer",price:245,mrp:1000,off:"76%",ratingCount:529,ratingValue:3.8,img:"images/Elite Knitted Loafer.jpg"},
+{name:"Rugged Denim Walker",price:250,mrp:1075,off:"77%",ratingCount:602,ratingValue:4.0,img:"images/Rugged Denim Walker.jpg"},
+{name:"Blue Wave Slip-on",price:249,mrp:1049,off:"76%",ratingCount:547,ratingValue:3.9,img:"images/Blue Wave Slip-on.jpg"},
+{name:"Active Sports Blue",price:250,mrp:1075,off:"77%",ratingCount:768,ratingValue:4.5,img:"images/Active Sports Blue.jpg"}
 ];
+
 const list=document.getElementById("list");
 
 products.forEach((p,i)=>{
-const stars=getStars();
 list.innerHTML+=`
 <div class="card" onclick="openPage(${i})">
 <div style="position:relative">
@@ -134,7 +122,7 @@ list.innerHTML+=`
 </div>
 <div class="info">
 <div class="title">${p.name}</div>
-<div class="stars">${stars} <span>| ${p.rating}</span></div>
+<div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>
 <div class="price">₹${p.price} <span class="old">M.R.P ₹${p.mrp}</span></div>
 </div>
 </div>`;
@@ -142,14 +130,30 @@ list.innerHTML+=`
 
 function openPage(i){
 let p=products[i];
-const stars=getStars();
 detail.style.display="block";
 detailContent.innerHTML=`
 <img src="${p.img}" style="width:100%;aspect-ratio:1/1;object-fit:cover">
+
 <div style="padding:15px">
 <h3>${p.name}</h3>
-<div class="stars">${stars} <span>| ${p.rating}</span></div>
+<div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>
+
 <p><b>₹${p.price}</b> <span class="old">M.R.P ₹${p.mrp}</span></p>
+
+<div class="rating-box">
+<div class="rating-score">
+<b>${p.ratingValue} ⭐</b><br>
+<small>${p.ratingCount} ratings</small><br>
+<small>Verified reviews</small>
+</div>
+
+<div class="rating-bars">
+<div class="row">Very Good<div class="bar"><div class="fill" style="width:${p.ratingValue*20}%"></div></div></div>
+<div class="row">Good<div class="bar"><div class="fill" style="width:${p.ratingValue*15}%"></div></div></div>
+<div class="row">Ok-Ok<div class="bar"><div class="fill" style="width:${p.ratingValue*10}%;background:#facc15"></div></div></div>
+</div>
+</div>
+
 <p>✔ Free Delivery<br>✔ Delivery in 7 Working Days</p>
 <button class="btn" onclick="order('${p.name}')">Order on WhatsApp</button>
 </div>`;
