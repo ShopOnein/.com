@@ -26,12 +26,8 @@ flex:1;height:6px;background:#e5e7eb;border-radius:10px;overflow:hidden
 }
 .rating-bars .fill{height:100%;background:#22c55e}
 
-.review{background:#f9fafb;padding:10px;border-radius:8px;margin-top:10px;font-size:13px}
-
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:12px}
-
 .card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
-
 .card img{width:100%;aspect-ratio:1/1;object-fit:cover}
 
 .badge{
@@ -41,7 +37,6 @@ background:#dc2626;color:#fff;font-size:11px;padding:4px 8px;border-radius:12px
 
 .info{padding:10px}
 .title{font-size:14px;font-weight:bold}
-
 .stars{color:#f59e0b;font-size:13px;display:flex;align-items:center;gap:6px}
 .stars span{color:#555;font-size:12px}
 
@@ -49,7 +44,6 @@ background:#dc2626;color:#fff;font-size:11px;padding:4px 8px;border-radius:12px
 .old{color:#777;text-decoration:line-through;font-size:12px}
 
 .page{position:fixed;inset:0;background:#fff;overflow:auto;display:none;z-index:99}
-
 .close{
 position:fixed;top:10px;right:10px;
 background:#000;color:#fff;border:none;padding:6px 10px;border-radius:6px
@@ -95,6 +89,20 @@ while(html.split("star").length-1<5) html+='<i class="fa-regular fa-star"></i>';
 return html;
 }
 
+// ⭐ Rating breakup function
+function ratingBreakup(total){
+let d={
+5:Math.round(total*0.62),
+4:Math.round(total*0.21),
+3:Math.round(total*0.09),
+2:Math.round(total*0.05),
+1:Math.round(total*0.03)
+};
+let s=d[5]+d[4]+d[3]+d[2]+d[1];
+d[5]+=total-s;
+return d;
+}
+
 const products=[
 {name:"Premium Boss Edition",price:249,mrp:1049,off:"76%",ratingCount:583,ratingValue:4.0,img:"images/Premium Boss Edition.jpg"},
 {name:"Royal Polo Classic (Tan)",price:250,mrp:1075,off:"77%",ratingCount:712,ratingValue:4.2,img:"images/Royal Polo Classic (Tan).jpg"},
@@ -130,6 +138,8 @@ list.innerHTML+=`
 
 function openPage(i){
 let p=products[i];
+let r=ratingBreakup(p.ratingCount);
+
 detail.style.display="block";
 detailContent.innerHTML=`
 <img src="${p.img}" style="width:100%;aspect-ratio:1/1;object-fit:cover">
@@ -148,11 +158,14 @@ detailContent.innerHTML=`
 </div>
 
 <div class="rating-bars">
-<div class="row">5 ★<div class="bar"><div class="fill" style="width:${p.ratingValue*20}%"></div></div></div>
-<div class="row">4 ★<div class="bar"><div class="fill" style="width:${p.ratingValue*18}%"></div></div></div>
-<div class="row">3 ★<div class="bar"><div class="fill" style="width:${p.ratingValue*14}%;background:#facc15"></div></div></div>
-<div class="row">2 ★<div class="bar"><div class="fill" style="width:${p.ratingValue*8}%;background:#fb923c"></div></div></div>
-<div class="row">1 ★<div class="bar"><div class="fill" style="width:${p.ratingValue*4}%;background:#ef4444"></div></div></div>
+${[5,4,3,2,1].map(s=>`
+<div class="row">
+${s} ★
+<div class="bar">
+<div class="fill" style="width:${(r[s]/p.ratingCount)*100}%;background:${s>=4?'#22c55e':s==3?'#facc15':s==2?'#fb923c':'#ef4444'}"></div>
+</div>
+<span>${Math.round((r[s]/p.ratingCount)*100)}% | ${r[s]}</span>
+</div>`).join("")}
 </div>
 </div>
 
