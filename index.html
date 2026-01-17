@@ -1,184 +1,372 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>ShopOne in</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<title>ShopOne in</title>  
+<meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">  <style>  
+body{margin:0;font-family:Arial;background:#f2f2f2}  
+header{background:#fff;padding:12px;}  
+  
+.rating-box{  
+display:flex;gap:15px;margin:15px 0;  
+border:1px solid #e5e7eb;padding:12px;border-radius:10px;font-size:13px  
+}  
+.rating-score{min-width:90px}  
+.rating-score b{font-size:18px}  
+.rating-bars{flex:1}  
+.rating-bars .row{  
+display:flex;align-items:center;gap:6px;margin:4px 0;font-size:12px  
+}  
+.rating-bars .bar{  
+flex:1;height:6px;background:#e5e7eb;border-radius:10px;overflow:hidden  
+}  
+.rating-bars .fill{height:100%;background:#22c55e}  
+  
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:12px}  
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}  
+.card img{width:100%;aspect-ratio:1/1;object-fit:cover}  
+  
+.badge{  
+position:absolute;top:8px;right:8px;  
+background:#dc2626;color:#fff;font-size:11px;padding:4px 8px;border-radius:12px  
+}  
+  
+.info{padding:10px}  
+.title{font-size:14px;font-weight:bold}  
+.stars{color:#f59e0b;font-size:13px;display:flex;align-items:center;gap:6px}  
+.stars span{color:#555;font-size:12px}  
+  
+.price{font-size:14px}  
+.old{color:#777;text-decoration:line-through;font-size:12px}  
+  
+.page{position:fixed;inset:0;background:#fff;overflow:auto;display:none;z-index:99}  
+.close{  
+position:fixed;top:10px;right:10px;  
+background:#000;color:#fff;border:none;padding:6px 10px;border-radius:6px  
+}  
+  
+.btn{  
+margin-top:10px;width:100%;padding:10px;  
+background:#000;color:#fff;border:none;border-radius:8px  
+}  
+  
+footer{background:#000;color:#fff;text-align:center;padding:20px 10px;margin-top:20px}  
+footer i{font-size:22px;margin:0 10px;color:#fff}  
+footer p{margin-top:12px;font-size:13px;color:#ccc}  
+</style>  </head>  <body>  
+<header style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px">
+<span style="font-size:20px;font-weight:bold">ShopOne in</span>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<style>
-body{margin:0;font-family:Arial;background:#f2f2f2}
-header{background:#fff;padding:12px;text-align:center;font-size:20px;font-weight:bold}
-
-.rating-box{
-display:flex;gap:15px;margin:15px 0;
-border:1px solid #e5e7eb;padding:12px;border-radius:10px;font-size:13px
-}
-.rating-score{min-width:90px}
-.rating-score b{font-size:18px}
-.rating-bars{flex:1}
-.rating-bars .row{
-display:flex;align-items:center;gap:6px;margin:4px 0;font-size:12px
-}
-.rating-bars .bar{
-flex:1;height:6px;background:#e5e7eb;border-radius:10px;overflow:hidden
-}
-.rating-bars .fill{height:100%;background:#22c55e}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:12px}
-.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
-.card img{width:100%;aspect-ratio:1/1;object-fit:cover}
-
-.badge{
-position:absolute;top:8px;right:8px;
-background:#dc2626;color:#fff;font-size:11px;padding:4px 8px;border-radius:12px
-}
-
-.info{padding:10px}
-.title{font-size:14px;font-weight:bold}
-.stars{color:#f59e0b;font-size:13px;display:flex;align-items:center;gap:6px}
-.stars span{color:#555;font-size:12px}
-
-.price{font-size:14px}
-.old{color:#777;text-decoration:line-through;font-size:12px}
-
-.page{position:fixed;inset:0;background:#fff;overflow:auto;display:none;z-index:99}
-.close{
-position:fixed;top:10px;right:10px;
-background:#000;color:#fff;border:none;padding:6px 10px;border-radius:6px
-}
-
-.btn{
-margin-top:10px;width:100%;padding:10px;
-background:#000;color:#fff;border:none;border-radius:8px
-}
-
-footer{background:#000;color:#fff;text-align:center;padding:20px 10px;margin-top:20px}
-footer i{font-size:22px;margin:0 10px;color:#fff}
-footer p{margin-top:12px;font-size:13px;color:#ccc}
-</style>
-</head>
-
-<body>
-
-<header>ShopOne in</header>
-
-<div class="grid" id="list"></div>
-
-<div class="page" id="detail">
-<button class="close" onclick="closePage()">X</button>
-<div id="detailContent"></div>
-</div>
-
-<footer>
-<a href="https://wa.me/917879266424"><i class="fab fa-whatsapp"></i></a>
+<div id="userArea" style="display:flex;gap:15px;align-items:center;font-size:14px">  <span id="loginBtns">  
+<span onclick="openAuth('signin')" style="cursor:pointer">Sign In</span>  
+<span onclick="openAuth('signup')" style="cursor:pointer;margin-left:8px">Sign Up</span>  
+</span>  <span id="userInfo" style="display:none">  
+<b id="userName"></b>  
+<span onclick="logout()" style="cursor:pointer;color:red;margin-left:8px">  
+Logout  
+</span>  
+</span>  <span onclick="openCart()" style="cursor:pointer">  
+<i class="fa-solid fa-cart-shopping"></i>  
+</span>  </div>  
+</header>  <div class="grid" id="list"></div>  <div class="page" id="detail">  
+<button class="close" onclick="closePage()">X</button>  
+<div id="detailContent"></div>  
+</div>  <footer>  
+<p style="margin:0 0 10px;font-size:15px;font-weight:bold;color:#fff;">  
+Contact Us  
+</p>  <a href="https://wa.me/917879266424"><i class="fab fa-whatsapp"></i></a>
 <a href="mailto:support@shopone.in"><i class="fa fa-envelope"></i></a>
 <a href="#"><i class="fab fa-facebook"></i></a>
 <a href="#"><i class="fab fa-instagram"></i></a>
-<p>2026 ShopOne in </p>
-</footer>
 
-<script>
-function starsHTML(r){
-let full=Math.floor(r), half=r%1>=0.5;
-let html="";
-for(let i=0;i<full;i++) html+='<i class="fa-solid fa-star"></i>';
-if(half) html+='<i class="fa-solid fa-star-half-stroke"></i>';
-while(html.split("star").length-1<5) html+='<i class="fa-regular fa-star"></i>';
-return html;
+<p>2026 ShopOne in </p>  
+</footer>  
+<div id="authBox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200">  
+<div style="background:#fff;width:90%;max-width:320px;margin:80px auto;padding:20px;border-radius:12px">  <h3 id="authTitle">Sign In</h3>  <input id="email" placeholder="Email / Mobile" style="width:100%;padding:10px;margin:8px 0">  
+<input id="pass1" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0">  
+<input id="confirmPass" type="password" placeholder="Confirm Password"  
+style="width:100%;padding:10px;margin:8px 0;display:none">  <small id="passError" style="color:red;display:none">Passwords do not match</small>
+
+<p id="signupLink" style="font-size:13px;text-align:center">  
+New user?  
+<b onclick="openAuth('signup')" style="color:#2563eb;cursor:pointer">Create account</b>  
+</p>  <p id="signinLink" style="font-size:13px;text-align:center;display:none">  
+Already have account?  
+<b onclick="openAuth('signin')" style="color:#2563eb;cursor:pointer">Sign In</b>  
+</p>  <button class="btn" onclick="submitAuth()">Continue</button>
+<button class="btn" style="background:#eee;color:#000" onclick="closeAuth()">Close</button>
+
+</div>  
+</div>  <!-- CART -->  <div id="cartBox" style="display:none;position:fixed;inset:0;background:#fff;z-index:200">  
+<button class="close" onclick="closeCart()">X</button>  
+<div style="padding:20px">  
+<h3>Your Cart</h3>  
+<p>No items added yet</p>  
+<button class="btn">Proceed to Order</button>  
+</div>  
+</div>  <script>  
+function starsHTML(r){  
+let full=Math.floor(r), half=r%1>=0.5;  
+let html="";  
+for(let i=0;i<full;i++) html+='<i class="fa-solid fa-star"></i>';  
+if(half) html+='<i class="fa-solid fa-star-half-stroke"></i>';  
+while(html.split("star").length-1<5) html+='<i class="fa-regular fa-star"></i>';  
+return html;  
+}  
+  
+// ⭐ Rating breakup function  
+function ratingBreakup(total){  
+let d={  
+5:Math.round(total*0.62),  
+4:Math.round(total*0.21),  
+3:Math.round(total*0.09),  
+2:Math.round(total*0.05),  
+1:Math.round(total*0.03)  
+};  
+let s=d[5]+d[4]+d[3]+d[2]+d[1];  
+d[5]+=total-s;  
+return d;  
+}  
+  
+const products=[  
+{name:"Premium Boss Edition",price:249,mrp:1049,off:"76%",ratingCount:583,ratingValue:4.0,img:"images/Premium Boss Edition.jpg"},  
+{name:"Royal Polo Classic (Tan)",price:250,mrp:1075,off:"77%",ratingCount:712,ratingValue:4.2,img:"images/Royal Polo Classic (Tan).jpg"},  
+{name:"Royal Polo Classic (Black)",price:245,mrp:1049,off:"77%",ratingCount:648,ratingValue:4.1,img:"images/Royal Polo Classic (Black).jpg"},  
+{name:"Starry Denim Sneaker",price:249,mrp:1075,off:"77%",ratingCount:531,ratingValue:3.9,img:"images/Starry Denim Sneaker.jpg"},  
+{name:"Jumpman Street-Vibe",price:245,mrp:1000,off:"76%",ratingCount:783,ratingValue:4.3,img:"images/Jumpman Street-Vibe.jpg"},  
+{name:"Classic Fashion Navy",price:249,mrp:1049,off:"76%",ratingCount:614,ratingValue:4.0,img:"images/Classic Fashion Navy.jpg"},  
+{name:"Red-Strip Comfort Slip-on",price:250,mrp:1075,off:"77%",ratingCount:759,ratingValue:4.4,img:"images/Red-Strip Comfort Slip-on.jpg"},  
+{name:"Urban Black Swoosh",price:245,mrp:1000,off:"76%",ratingCount:701,ratingValue:4.2,img:"images/Urban Black Swoosh.jpg"},  
+{name:"Triple-Strap Easy Wear",price:249,mrp:1049,off:"76%",ratingCount:688,ratingValue:4.1,img:"images/Triple-Strap Easy Wear.jpg"},  
+{name:"Elite Knitted Loafer",price:245,mrp:1000,off:"76%",ratingCount:529,ratingValue:3.8,img:"images/Elite Knitted Loafer.jpg"},  
+{name:"Rugged Denim Walker",price:250,mrp:1075,off:"77%",ratingCount:602,ratingValue:4.0,img:"images/Rugged Denim Walker.jpg"},  
+{name:"Blue Wave Slip-on",price:249,mrp:1049,off:"76%",ratingCount:547,ratingValue:3.9,img:"images/Blue Wave Slip-on.jpg"},  
+{name:"Active Sports Blue",price:250,mrp:1075,off:"77%",ratingCount:768,ratingValue:4.5,img:"images/Active Sports Blue.jpg"}  
+];  
+  
+const list=document.getElementById("list");  
+  
+products.forEach((p,i)=>{  
+list.innerHTML+=`  
+<div class="card" onclick="openPage(${i})">  
+<div style="position:relative">  
+<img src="${p.img}">  
+<span class="badge">${p.off} OFF</span>  
+</div>  
+<div class="info">  
+<div class="title">${p.name}</div>  
+<div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>  
+<div class="price">₹${p.price} <span class="old">M.R.P ₹${p.mrp}</span></div>  
+</div>  
+</div>`;  
+});  
+  
+function openPage(i){  
+let p=products[i];  
+let r=ratingBreakup(p.ratingCount);  
+  
+detail.style.display="block";  
+detailContent.innerHTML=`  
+<img src="${p.img}" style="width:100%;aspect-ratio:1/1;object-fit:cover">  
+  
+<div style="padding:15px">  
+<h3>${p.name}</h3>  
+<div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>  
+  
+<p><b>₹${p.price}</b> <span class="old">M.R.P ₹${p.mrp}</span></p>  
+  
+<div class="rating-box">  
+<div class="rating-score">  
+<b>${p.ratingValue} ⭐</b><br>  
+<small>${p.ratingCount} ratings</small><br>  
+<small>Verified reviews</small>  
+</div>  
+  
+<div class="rating-bars">  
+${[5,4,3,2,1].map(s=>`  
+<div class="row">  
+${s} ★  
+<div class="bar">  
+<div class="fill" style="width:${(r[s]/p.ratingCount)*100}%;background:${s>=4?'#22c55e':s==3?'#facc15':s==2?'#fb923c':'#ef4444'}"></div>  
+</div>  
+<span>${Math.round((r[s]/p.ratingCount)*100)}% | ${r[s]}</span>  
+</div>`).join("")}  
+</div>  
+</div>  
+  
+<p>🚚 Fast & Free Delivery</p>
+<p>🔸 Cash On Delivery</p>
+
+<button class="btn" onclick="addToCart(${i})">
+Add to Cart
+</button>
+
+<button class="btn" onclick="order('${p.name}')">
+Order on WhatsApp
+</button>
+</div>`;  
+}  
+  
+function closePage(){  
+detail.style.display="none";  
+}  
+  
+function order(name){  
+window.open("https://wa.me/917879266424?text=Order%20for%20"+name);  
+}  
+  
+/* ---------- AUTH ---------- */  
+  
+function openAuth(type){  
+document.getElementById("authBox").style.display="block";  
+document.getElementById("authTitle").innerText =  
+type==="signup" ? "Sign Up" : "Sign In";  
+  
+document.getElementById("confirmPass").style.display =  
+type==="signup" ? "block" : "none";  
+  
+document.getElementById("signinLink").style.display =  
+type==="signup" ? "block" : "none";  
+  
+document.getElementById("signupLink").style.display =  
+type==="signup" ? "none" : "block";  
+  
+document.getElementById("passError").style.display="none";  
+}  
+  
+function closeAuth(){  
+document.getElementById("authBox").style.display="none";  
+}  
+  
+/* ---------- CART ---------- */  
+  
+function openCart(){  
+document.getElementById("cartBox").style.display="block";  
+}  
+  
+function closeCart(){  
+document.getElementById("cartBox").style.display="none";  
+}  
+  
+/* ---------- LOGIN / SIGNUP LOGIC ---------- */  
+  
+function submitAuth(){  
+let mode = document.getElementById("authTitle").innerText;  
+let email = document.getElementById("email").value.trim();  
+let pass = document.getElementById("pass1").value;  
+let cpass = document.getElementById("confirmPass").value;  
+  
+if(!email || !pass){  
+alert("Please fill all fields");  
+return;  
+}  
+  
+if(mode==="Sign Up"){  
+if(pass !== cpass){  
+document.getElementById("passError").style.display="block";  
+return;  
+}  
+localStorage.setItem("user",  
+JSON.stringify({email:email,password:pass}));  
+}  
+  
+if(mode==="Sign In"){  
+let saved = JSON.parse(localStorage.getItem("user"));  
+if(!saved || saved.email!==email || saved.password!==pass){  
+alert("Invalid login details");  
+return;  
+}  
+}  
+  
+localStorage.setItem("loggedIn","yes");  
+localStorage.setItem("userEmail",email);  
+closeAuth();  
+checkLogin();  
+}  
+  
+/* ---------- LOGIN STATE ---------- */  
+  
+function checkLogin(){  
+let logged = localStorage.getItem("loggedIn");  
+if(logged==="yes"){  
+document.getElementById("loginBtns").style.display="none";  
+document.getElementById("userInfo").style.display="inline";  
+document.getElementById("userName").innerText =  
+localStorage.getItem("userEmail");  
+}else{  
+document.getElementById("loginBtns").style.display="inline";  
+document.getElementById("userInfo").style.display="none";  
+}  
+}  
+  
+function logout(){  
+localStorage.removeItem("loggedIn");  
+localStorage.removeItem("userEmail");  
+checkLogin();  
+}  
+  
+window.onload = checkLogin;  
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function addToCart(index){
+  let p = products[index];
+
+  let found = cart.find(i => i.name === p.name);
+  if(found){
+    found.qty += 1;
+  }else{
+    cart.push({
+      name:p.name,
+      price:p.price,
+      img:p.img,
+      qty:1
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Item added to cart");
+  renderCart();
 }
 
-// ⭐ Rating breakup function
-function ratingBreakup(total){
-let d={
-5:Math.round(total*0.62),
-4:Math.round(total*0.21),
-3:Math.round(total*0.09),
-2:Math.round(total*0.05),
-1:Math.round(total*0.03)
-};
-let s=d[5]+d[4]+d[3]+d[2]+d[1];
-d[5]+=total-s;
-return d;
+function renderCart(){
+  let box = document.getElementById("cartBox");
+  let html = `<button class="close" onclick="closeCart()">X</button>
+  <div style="padding:20px"><h3>Your Cart</h3>`;
+
+  if(cart.length===0){
+    html += `<p>No items added yet</p>`;
+  }else{
+    let total = 0;
+    cart.forEach((i,idx)=>{
+      total += i.price * i.qty;
+      html += `
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <img src="${i.img}" width="60">
+        <div style="flex:1">
+          <b>${i.name}</b><br>
+          ₹${i.price} × ${i.qty}
+        </div>
+        <span onclick="removeItem(${idx})" style="cursor:pointer;color:red">✖</span>
+      </div>`;
+    });
+    html += `<hr><b>Total: ₹${total}</b>
+    <button class="btn">Proceed to Order</button>`;
+  }
+
+  html += `</div>`;
+  box.innerHTML = html;
 }
 
-const products=[
-{name:"Premium Boss Edition",price:249,mrp:1049,off:"76%",ratingCount:583,ratingValue:4.0,img:"images/Premium Boss Edition.jpg"},
-{name:"Royal Polo Classic (Tan)",price:250,mrp:1075,off:"77%",ratingCount:712,ratingValue:4.2,img:"images/Royal Polo Classic (Tan).jpg"},
-{name:"Royal Polo Classic (Black)",price:245,mrp:1049,off:"77%",ratingCount:648,ratingValue:4.1,img:"images/Royal Polo Classic (Black).jpg"},
-{name:"Starry Denim Sneaker",price:249,mrp:1075,off:"77%",ratingCount:531,ratingValue:3.9,img:"images/Starry Denim Sneaker.jpg"},
-{name:"Jumpman Street-Vibe",price:245,mrp:1000,off:"76%",ratingCount:783,ratingValue:4.3,img:"images/Jumpman Street-Vibe.jpg"},
-{name:"Classic Fashion Navy",price:249,mrp:1049,off:"76%",ratingCount:614,ratingValue:4.0,img:"images/Classic Fashion Navy.jpg"},
-{name:"Red-Strip Comfort Slip-on",price:250,mrp:1075,off:"77%",ratingCount:759,ratingValue:4.4,img:"images/Red-Strip Comfort Slip-on.jpg"},
-{name:"Urban Black Swoosh",price:245,mrp:1000,off:"76%",ratingCount:701,ratingValue:4.2,img:"images/Urban Black Swoosh.jpg"},
-{name:"Triple-Strap Easy Wear",price:249,mrp:1049,off:"76%",ratingCount:688,ratingValue:4.1,img:"images/Triple-Strap Easy Wear.jpg"},
-{name:"Elite Knitted Loafer",price:245,mrp:1000,off:"76%",ratingCount:529,ratingValue:3.8,img:"images/Elite Knitted Loafer.jpg"},
-{name:"Rugged Denim Walker",price:250,mrp:1075,off:"77%",ratingCount:602,ratingValue:4.0,img:"images/Rugged Denim Walker.jpg"},
-{name:"Blue Wave Slip-on",price:249,mrp:1049,off:"76%",ratingCount:547,ratingValue:3.9,img:"images/Blue Wave Slip-on.jpg"},
-{name:"Active Sports Blue",price:250,mrp:1075,off:"77%",ratingCount:768,ratingValue:4.5,img:"images/Active Sports Blue.jpg"}
-];
-
-const list=document.getElementById("list");
-
-products.forEach((p,i)=>{
-list.innerHTML+=`
-<div class="card" onclick="openPage(${i})">
-<div style="position:relative">
-<img src="${p.img}">
-<span class="badge">${p.off} OFF</span>
-</div>
-<div class="info">
-<div class="title">${p.name}</div>
-<div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>
-<div class="price">₹${p.price} <span class="old">M.R.P ₹${p.mrp}</span></div>
-</div>
-</div>`;
-});
-
-function openPage(i){
-let p=products[i];
-let r=ratingBreakup(p.ratingCount);
-
-detail.style.display="block";
-detailContent.innerHTML=`
-<img src="${p.img}" style="width:100%;aspect-ratio:1/1;object-fit:cover">
-
-<div style="padding:15px">
-<h3>${p.name}</h3>
-<div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>
-
-<p><b>₹${p.price}</b> <span class="old">M.R.P ₹${p.mrp}</span></p>
-
-<div class="rating-box">
-<div class="rating-score">
-<b>${p.ratingValue} ⭐</b><br>
-<small>${p.ratingCount} ratings</small><br>
-<small>Verified reviews</small>
-</div>
-
-<div class="rating-bars">
-${[5,4,3,2,1].map(s=>`
-<div class="row">
-${s} ★
-<div class="bar">
-<div class="fill" style="width:${(r[s]/p.ratingCount)*100}%;background:${s>=4?'#22c55e':s==3?'#facc15':s==2?'#fb923c':'#ef4444'}"></div>
-</div>
-<span>${Math.round((r[s]/p.ratingCount)*100)}% | ${r[s]}</span>
-</div>`).join("")}
-</div>
-</div>
-
-<p>🚚 Fast & Free Delivery<br>🔸 Cash On Delivery</p>
-<button class="btn" onclick="order('${p.name}')">Order on WhatsApp</button>
-</div>`;
+function removeItem(i){
+  cart.splice(i,1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
 }
 
-function closePage(){detail.style.display="none"}
-function order(name){
-window.open("https://wa.me/917879266424?text=Order%20for%20"+name);
+function openCart(){
+  renderCart();
+  document.getElementById("cartBox").style.display="block";
 }
-</script>
 
-</body>
-</html>
+</script>  </body>  
+  </html>
