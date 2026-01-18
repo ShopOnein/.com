@@ -264,10 +264,38 @@ document.getElementById("authBox").style.display="none";
 }  
   
 /* ---------- CART ---------- */  
-  
-function openCart(){  
-document.getElementById("cartBox").style.display="block";  
-}  
+
+function openCart(){
+document.getElementById("cartBox").style.display="block";
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let box = document.getElementById("cartItems");
+let total = 0;
+
+box.innerHTML = "";
+
+if(cart.length === 0){
+box.innerHTML = "<p>Your cart is empty</p>";
+}
+
+cart.forEach(item=>{
+total += item.price * item.qty;
+
+box.innerHTML += `
+<div style="display:flex;gap:10px;margin-bottom:12px;align-items:center">
+<img src="${item.img}" width="60">
+<div>
+<b>${item.name}</b><br>
+₹${item.price} × ${item.qty}
+</div>
+</div>
+`;
+});
+
+document.getElementById("cartTotal").innerText = total;
+}
+
+
   
 function closeCart(){  
 document.getElementById("cartBox").style.display="none";  
