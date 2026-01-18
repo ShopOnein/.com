@@ -99,11 +99,16 @@ Already have account?
 </div>  <!-- CART -->  <div id="cartBox" style="display:none;position:fixed;inset:0;background:#fff;z-index:200">  
 <button class="close" onclick="closeCart()">X</button>  
 <div style="padding:20px">  
-<h3>Your Cart</h3>  
-<p>No items added yet</p>  
+<h3>Your Cart</h3>
+
+<div id="cartItems"></div>
+
+<h3>Total: ₹<span id="cartTotal">0</span></h3>
+
 <button class="btn">Proceed to Order</button>  
 </div>  
-</div>  <script>  
+</div>  
+<script>  
 function starsHTML(r){  
 let full=Math.floor(r), half=r%1>=0.5;  
 let html="";  
@@ -145,20 +150,45 @@ const products=[
   
 const list=document.getElementById("list");  
   
-products.forEach((p,i)=>{  
-list.innerHTML+=`  
-<div class="card" onclick="openPage(${i})">  
-<div style="position:relative">  
-<img src="${p.img}">  
-<span class="badge">${p.off} OFF</span>  
-</div>  
-<div class="info">  
-<div class="title">${p.name}</div>  
-<div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>  
-<div class="price">₹${p.price} <span class="old">M.R.P ₹${p.mrp}</span></div>  
-</div>  
-</div>`;  
-});  
+products.forEach((p,i)=>{
+list.innerHTML+=`
+<div class="card">
+
+<div style="position:relative" onclick="openPage(${i})">
+<img src="${p.img}">
+
+<!-- LIKE BUTTON LEFT CORNER -->
+<i class="fa-regular fa-heart"
+id="like-${i}"
+onclick="toggleLike(event,${i})"
+style="
+position:absolute;
+top:8px;
+left:8px;
+font-size:18px;
+background:#fff;
+padding:6px;
+border-radius:50%;
+cursor:pointer;
+"></i>
+
+<span class="badge">${p.off} OFF</span>
+</div>
+
+<div class="info">
+<div class="title">${p.name}</div>
+
+<div class="stars">
+${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span>
+</div>
+
+<div class="price">
+₹${p.price} <span class="old">M.R.P ₹${p.mrp}</span>
+</div>
+</div>
+
+</div>`;
+});
   
 function openPage(i){  
 let p=products[i];  
@@ -193,16 +223,12 @@ ${s} ★
 </div>  
 </div>  
   
-<p>🚚 Fast & Free Delivery</p>
-<p>🔸 Cash On Delivery</p>
-
+<p>🚚 Fast & Free Deliver
+<p>🔸 Cash On Delivery</p>  
 <button class="btn" onclick="addToCart(${i})">
 Add to Cart
 </button>
-
-<button class="btn" onclick="order('${p.name}')">
-Order on WhatsApp
-</button>
+<button class="btn" onclick="order('${p.name}')">Order on WhatsApp</button>  
 </div>`;  
 }  
   
@@ -305,68 +331,63 @@ checkLogin();
 }  
   
 window.onload = checkLogin;  
+let likes = JSON.parse(localStorage.getItem("likes")) || {};
 
+function toggleLike(e,i){
+e.stopPropagation();
+
+if(localStorage.getItem("loggedIn")!=="yes"){
+openAuth("signin");
+return;
+}
+
+likes[i]=!likes[i];
+localStorage.setItem("likes",JSON.stringify(likes));
+updateLikes();
+}
+
+function updateLikes(){
+products.forEach((_,i)=>{
+let icon=document.getElementById("like-"+i);
+if(!icon) return;
+
+if(likes[i]){
+icon.classList.remove("fa-regular");
+icon.classList.add("fa-solid");
+icon.style.color="red";
+}else{
+icon.classList.add("fa-regular");
+icon.classList.remove("fa-solid");
+icon.style.color="grey";
+}
+});
+}
+function addToCart(i){
+
+// ❌ BINA LOGIN → SIGN IN OPEN
+if(localStorage.getItem("loggedIn")!=="yes"){
+openAuth("signin");
+return;
+}
+
+let p = products[i];
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let found = cart.find(x=>x.name===p.name);
 
-function addToCart(index){
-  let p = products[index];
-
-  let found = cart.find(i => i.name === p.name);
-  if(found){
-    found.qty += 1;
-  }else{
-    cart.push({
-      name:p.name,
-      price:p.price,
-      img:p.img,
-      qty:1
-    });
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-  alert("Item added to cart");
-  renderCart();
+if(found){
+found.qty++;
+}else{
+cart.push({
+name:p.name,
+price:p.price,
+img:p.img,
+qty:1
+});
 }
 
-function renderCart(){
-  let box = document.getElementById("cartBox");
-  let html = `<button class="close" onclick="closeCart()">X</button>
-  <div style="padding:20px"><h3>Your Cart</h3>`;
-
-  if(cart.length===0){
-    html += `<p>No items added yet</p>`;
-  }else{
-    let total = 0;
-    cart.forEach((i,idx)=>{
-      total += i.price * i.qty;
-      html += `
-      <div style="display:flex;gap:10px;margin-bottom:10px">
-        <img src="${i.img}" width="60">
-        <div style="flex:1">
-          <b>${i.name}</b><br>
-          ₹${i.price} × ${i.qty}
-        </div>
-        <span onclick="removeItem(${idx})" style="cursor:pointer;color:red">✖</span>
-      </div>`;
-    });
-    html += `<hr><b>Total: ₹${total}</b>
-    <button class="btn">Proceed to Order</button>`;
-  }
-
-  html += `</div>`;
-  box.innerHTML = html;
+localStorage.setItem("cart",JSON.stringify(cart));
+alert("Added to cart");
 }
-
-function removeItem(i){
-  cart.splice(i,1);
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-}
-
-function openCart(){
-  renderCart();
-  document.getElementById("cartBox").style.display="block";
-}
-
+updateLikes();
 </script>  </body>  
-  </html>
+</html>
