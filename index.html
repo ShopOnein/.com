@@ -52,7 +52,8 @@ background:#000;color:#fff;border:none;border-radius:8px
 footer{background:#000;color:#fff;text-align:center;padding:20px 10px;margin-top:20px}  
 footer i{font-size:22px;margin:0 10px;color:#fff}  
 footer p{margin-top:12px;font-size:13px;color:#ccc}  
-</style>  </head>  <body>  
+</style>  </head>  
+<body>  
 <header style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px">
 <span style="font-size:20px;font-weight:bold">ShopOne in</span>
 
@@ -81,7 +82,17 @@ Contact Us
 <p>2026 ShopOne in </p>  
 </footer>  
 <div id="authBox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200">  
-<div style="background:#fff;width:90%;max-width:320px;margin:80px auto;padding:20px;border-radius:12px">  <h3 id="authTitle">Sign In</h3>  <input id="email" placeholder="Email / Mobile" style="width:100%;padding:10px;margin:8px 0">  
+<div style="background:#fff;width:90%;max-width:320px;margin:80px auto;padding:20px;border-radius:12px">  <h3 id="authTitle">Sign In</h3>  <input id="fullName" placeholder="Full Name" style="width:100%;padding:10px;margin:8px 0">
+
+<input id="mobile" placeholder="Mobile Number" style="width:100%;padding:10px;margin:8px 0">
+
+<input id="email" placeholder="Email" style="width:100%;padding:10px;margin:8px 0">
+
+<input id="house" placeholder="House / Street" style="width:100%;padding:10px;margin:8px 0">
+
+<input id="city" placeholder="City" style="width:100%;padding:10px;margin:8px 0">
+
+<input id="pincode" placeholder="Pincode" style="width:100%;padding:10px;margin:8px 0">  
 <input id="pass1" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0">  
 <input id="confirmPass" type="password" placeholder="Confirm Password"  
 style="width:100%;padding:10px;margin:8px 0;display:none">  <small id="passError" style="color:red;display:none">Passwords do not match</small>
@@ -303,39 +314,61 @@ document.getElementById("cartBox").style.display="none";
   
 /* ---------- LOGIN / SIGNUP LOGIC ---------- */  
   
-function submitAuth(){  
-let mode = document.getElementById("authTitle").innerText;  
-let email = document.getElementById("email").value.trim();  
-let pass = document.getElementById("pass1").value;  
-let cpass = document.getElementById("confirmPass").value;  
-  
-if(!email || !pass){  
-alert("Please fill all fields");  
-return;  
-}  
-  
-if(mode==="Sign Up"){  
-if(pass !== cpass){  
-document.getElementById("passError").style.display="block";  
-return;  
-}  
-localStorage.setItem("user",  
-JSON.stringify({email:email,password:pass}));  
-}  
-  
-if(mode==="Sign In"){  
-let saved = JSON.parse(localStorage.getItem("user"));  
-if(!saved || saved.email!==email || saved.password!==pass){  
-alert("Invalid login details");  
-return;  
-}  
-}  
-  
-localStorage.setItem("loggedIn","yes");  
-localStorage.setItem("userEmail",email);  
-closeAuth();  
-checkLogin();  
-}  
+function submitAuth(){
+
+let mode = document.getElementById("authTitle").innerText;
+
+let user = {
+name: document.getElementById("fullName")?.value.trim(),
+mobile: document.getElementById("mobile")?.value.trim(),
+email: document.getElementById("email").value.trim(),
+house: document.getElementById("house")?.value.trim(),
+city: document.getElementById("city")?.value.trim(),
+pincode: document.getElementById("pincode")?.value.trim(),
+password: document.getElementById("pass1").value
+};
+
+let cpass = document.getElementById("confirmPass").value;
+
+/* ---------- SIGN UP ---------- */
+if(mode === "Sign Up"){
+
+if(!user.name || !user.mobile || !user.email || !user.house || !user.city || !user.pincode || !user.password){
+alert("Please fill all fields");
+return;
+}
+
+if(user.password !== cpass){
+document.getElementById("passError").style.display="block";
+return;
+}
+
+localStorage.setItem("user", JSON.stringify(user));
+}
+
+/* ---------- SIGN IN ---------- */
+if(mode === "Sign In"){
+
+if(!user.email || !user.password){
+alert("Please fill all fields");
+return;
+}
+
+let saved = JSON.parse(localStorage.getItem("user"));
+
+if(!saved || saved.email !== user.email || saved.password !== user.password){
+alert("Invalid login details");
+return;
+}
+}
+
+/* ---------- LOGIN SUCCESS ---------- */
+localStorage.setItem("loggedIn","yes");
+localStorage.setItem("userEmail",user.email);
+
+closeAuth();
+checkLogin();
+}
   
 /* ---------- LOGIN STATE ---------- */  
   
