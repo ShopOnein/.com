@@ -2,7 +2,8 @@
 <head>  
 <meta charset="UTF-8">  
 <title>ShopOne in</title>  
-<meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">  <style>  
+<meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">  
+<style>  
 body{margin:0;font-family:Arial;background:#f2f2f2}  
 header{background:#fff;padding:12px;}  
   
@@ -52,7 +53,46 @@ background:#000;color:#fff;border:none;border-radius:8px
 footer{background:#000;color:#fff;text-align:center;padding:20px 10px;margin-top:20px}  
 footer i{font-size:22px;margin:0 10px;color:#fff}  
 footer p{margin-top:12px;font-size:13px;color:#ccc}  
-</style>  </head>  
+.review-box{
+margin-top:15px;
+border-top:1px solid #e5e7eb;
+padding-top:10px;
+}
+.review{
+display:flex;
+gap:8px;
+padding:8px 0;
+border-bottom:1px solid #f1f1f1;
+font-size:13px;
+}
+.review:last-child{border:none}
+.review-name{
+font-weight:bold;
+font-size:13px;
+}
+.verified{
+color:#16a34a;
+font-size:12px;
+margin-left:4px;
+}
+.review-text{
+font-size:13px;
+color:#333;
+}
+.review-time{
+font-size:11px;
+color:#777;
+}
+.review-wrapper{
+margin-top:20px;
+}
+
+.review-box{
+display:none;
+margin-top:20px;
+}
+</style>  
+</head>  
 <body>  
 <header style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px">
 <span style="font-size:20px;font-weight:bold">ShopOne in</span>
@@ -214,7 +254,10 @@ detailContent.innerHTML=`
 <div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>  
   
 <p><b>₹${p.price}</b> <span class="old">M.R.P ₹${p.mrp}</span></p>  
-  
+
+<p>🚚 Fast & Free Deliver
+<p>🔸 Cash On Delivery</p>
+
 <div class="rating-box">  
 <div class="rating-score">  
 <b>${p.ratingValue} ⭐</b><br>  
@@ -233,12 +276,24 @@ ${s} ★
 </div>`).join("")}  
 </div>  
 </div>  
-  
-<p>🚚 Fast & Free Deliver
-<p>🔸 Cash On Delivery</p>  
+
+<div class="review-wrapper">
+
+<button class="view-btn" id="reviewBtn" onclick="toggleReviews()">
+View all reviews
+</button>
+
+<div class="review-box" id="reviewBox">
+<h4>Customer Reviews (Verified)</h4>
+${getReviews()}
+</div>
+
+</div>
+
 <button class="btn" onclick="addToCart(${i})">
 Add to Cart
 </button>
+
 <button class="btn" onclick="order('${p.name}')">Order on WhatsApp</button>  
 </div>`;  
 }  
@@ -450,5 +505,69 @@ localStorage.setItem("cart",JSON.stringify(cart));
 alert("Added to cart");
 }
 updateLikes();
+
+const sampleReviews = [
+{name:"Narasimha Singh",stars:5,text:"Awesome"},
+{name:"Rameshwar Rao",stars:3,text:"Very good"},
+{name:"Rani Dikshit",stars:2,text:"Comfortable hai"},
+{name:"Amir",stars:1,text:"Theek hai"},
+{name:"Arun Yadav",stars:3,text:"Great shoes"},
+{name:"Raman Pratap",stars:4,text:"Kafi achcha hai"},
+{name:"Pawan Kalyan",stars:2,text:"Ok okay"},
+{name:"Raju",stars:4,text:"Comfortable hai"},
+{name:"Sanjay Verma",stars:5,text:"Value for money"},
+{name:"Imran Khan",stars:2,text:"Quality average"},
+{name:"Amit Mishra",stars:3,text:"Good product"},
+{name:"Neha Patel",stars:4,text:"Nice fitting"},
+{name:"Rohit Sharma",stars:5,text:"Excellent"},
+{name:"Sunita Devi",stars:2,text:"Thoda tight"},
+{name:"Vikas Gupta",stars:3,text:"Daily use ke liye sahi"},
+{name:"Karan Mehta",stars:4,text:"Looks premium"},
+{name:"Salman Ali",stars:1,text:"Normal hai"},
+{name:"Deepak Yadav",stars:5,text:"Super comfortable"},
+{name:"Manoj Singh",stars:3,text:"Average"},
+{name:"Pooja Sharma",stars:4,text:"Stylish"},
+{name:"Ajay Kumar",stars:2,text:"Ok hai"},
+{name:"Farhan Ansari",stars:3,text:"Good but price high"},
+{name:"Rekha Jain",stars:5,text:"Loved it"},
+{name:"Ritesh Pandey",stars:4,text:"Worth buying"},
+{name:"Mukesh Patel",stars:2,text:"Could be better"}
+];
+
+function getReviews(){
+return sampleReviews
+.sort(()=>0.5-Math.random())
+.slice(0,25)
+.map((r,i)=>{
+let days = i===0 ? "Today" : i===1 ? "1 day ago" : i+" days ago";
+let stars = "★".repeat(r.stars)+"☆".repeat(5-r.stars);
+
+return `
+<div class="review">
+<div>
+<div class="review-name">
+${r.name}
+<span class="verified">✔ verified</span>
+</div>
+<div style="color:#f59e0b;font-size:12px">${stars}</div>
+<div class="review-text">${r.text}</div>
+<div class="review-time">${days}</div>
+</div>
+</div>
+`;
+}).join("");
+}
+function toggleReviews(){
+let box = document.getElementById("reviewBox");
+let btn = document.getElementById("reviewBtn");
+
+if(box.style.display === "block"){
+box.style.display = "none";
+btn.innerText = "View all reviews";
+}else{
+box.style.display = "block";
+btn.innerText = "Hide reviews";
+}
+}
 </script>  </body>  
 </html>
