@@ -91,6 +91,40 @@ margin-top:20px;
 display:none;
 margin-top:20px;
 }
+.btn-row{
+display:flex;
+gap:12px;
+margin-top:12px;
+}
+
+.btn-row .btn{
+flex:1;
+}
+.view-btn{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#ffffff;
+border:1.5px solid #e5e7eb;
+border-radius:10px;
+font-size:14px;
+font-weight:600;
+color:#111827;
+cursor:pointer;
+box-shadow:0 2px 6px rgba(0,0,0,0.05);
+transition:all 0.25s ease;
+}
+
+.view-btn:hover{
+background:#f9fafb;
+border-color:#22c55e;
+color:#16a34a;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.view-btn:active{
+transform:scale(0.97);
+}
 </style>  
 </head>  
 <body>  
@@ -285,16 +319,20 @@ View all reviews
 
 <div class="review-box" id="reviewBox">
 <h4>Customer Reviews (Verified)</h4>
-${getReviews()}
+${renderReviews(i)}
 </div>
 
 </div>
 
+<div class="btn-row">
 <button class="btn" onclick="addToCart(${i})">
-Add to Cart
+🛒 Add to Cart
 </button>
 
-<button class="btn" onclick="order('${p.name}')">Order on WhatsApp</button>  
+<button class="btn" onclick="order('${p.name}')">
+💬 Order on WhatsApp
+</button>
+</div>  
 </div>`;  
 }  
   
@@ -534,13 +572,46 @@ const sampleReviews = [
 {name:"Mukesh Patel",stars:2,text:"Could be better"}
 ];
 
-function getReviews(){
-return sampleReviews
-.sort(()=>0.5-Math.random())
-.slice(0,25)
-.map((r,i)=>{
-let days = i===0 ? "Today" : i===1 ? "1 day ago" : i+" days ago";
+function generateRealisticDays(){
+let r = Math.random();
+let days;
+
+if(r < 0.6){
+days = Math.floor(Math.random()*4); // 0–3 days (most)
+}else if(r < 0.85){
+days = 4 + Math.floor(Math.random()*7); // 4–10 days
+}else{
+days = 11 + Math.floor(Math.random()*20); // 11–30 days
+}
+
+return days;
+}
+
+function getProductReviews(pid){
+let key = "reviews_product_"+pid;
+let saved = localStorage.getItem(key);
+if(saved) return JSON.parse(saved);
+
+let shuffled = [...sampleReviews].sort(()=>0.5-Math.random()).slice(0,25);
+
+let final = shuffled.map(r=>({
+...r,
+days: generateRealisticDays()
+}));
+
+localStorage.setItem(key, JSON.stringify(final));
+return final;
+}
+
+function renderReviews(pid){
+let data = getProductReviews(pid);
+
+return data.map(r=>{
 let stars = "★".repeat(r.stars)+"☆".repeat(5-r.stars);
+let time =
+r.days === 0 ? "Today" :
+r.days === 1 ? "1 day ago" :
+r.days + " days ago";
 
 return `
 <div class="review">
@@ -551,7 +622,7 @@ ${r.name}
 </div>
 <div style="color:#f59e0b;font-size:12px">${stars}</div>
 <div class="review-text">${r.text}</div>
-<div class="review-time">${days}</div>
+<div class="review-time">${time}</div>
 </div>
 </div>
 `;
