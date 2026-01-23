@@ -125,6 +125,90 @@ box-shadow:0 4px 12px rgba(0,0,0,0.08);
 .view-btn:active{
 transform:scale(0.97);
 }
+
+/* FLIPKART STYLE TRUST SECTION */
+.fk-section{
+  background:#fff;
+  margin:10px;
+  padding:16px;
+  border-radius:8px;
+}
+
+.fk-section h3{
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:14px;
+  color:#212121;
+}
+
+.fk-trust{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.fk-item{
+  flex:1;
+  text-align:center;
+  padding:12px 6px;
+  cursor:pointer;
+}
+
+.fk-item i{
+  font-size:22px;
+  color:#2874f0;   /* Flipkart Blue */
+  margin-bottom:6px;
+}
+
+.fk-item p{
+  font-size:13px;
+  color:#212121;
+  font-weight:500;
+}
+
+/* subtle hover like Flipkart */
+.fk-item:hover i{
+  color:#0f5ad1;
+}
+
+/* SIMILAR PRODUCTS SECTION */
+.similar-wrap{
+display:flex;
+gap:12px;
+overflow-x:auto;
+padding:10px 0;
+}
+
+.similar-card{
+min-width:140px;
+background:#fff;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,.08);
+cursor:pointer;
+}
+
+.similar-card img{
+width:100%;
+aspect-ratio:1/1;
+object-fit:cover;
+border-radius:10px 10px 0 0;
+}
+
+.similar-info{
+padding:8px;
+font-size:13px;
+}
+
+.similar-info b{
+font-size:13px;
+display:block;
+}
+
+.similar-price{
+color:#111;
+font-weight:bold;
+margin-top:4px;
+}
 </style>  
 </head>  
 <body>  
@@ -217,21 +301,228 @@ d[5]+=total-s;
 return d;  
 }  
   
-const products=[  
-{name:"Premium Boss Edition",price:249,mrp:1049,off:"76%",ratingCount:583,ratingValue:4.0,img:"images/Premium Boss Edition.jpg"},  
-{name:"Royal Polo Classic (Tan)",price:250,mrp:1075,off:"77%",ratingCount:712,ratingValue:4.2,img:"images/Royal Polo Classic (Tan).jpg"},  
-{name:"Royal Polo Classic (Black)",price:245,mrp:1049,off:"77%",ratingCount:648,ratingValue:4.1,img:"images/Royal Polo Classic (Black).jpg"},  
-{name:"Starry Denim Sneaker",price:249,mrp:1075,off:"77%",ratingCount:531,ratingValue:3.9,img:"images/Starry Denim Sneaker.jpg"},  
-{name:"Jumpman Street-Vibe",price:245,mrp:1000,off:"76%",ratingCount:783,ratingValue:4.3,img:"images/Jumpman Street-Vibe.jpg"},  
-{name:"Classic Fashion Navy",price:249,mrp:1049,off:"76%",ratingCount:614,ratingValue:4.0,img:"images/Classic Fashion Navy.jpg"},  
-{name:"Red-Strip Comfort Slip-on",price:250,mrp:1075,off:"77%",ratingCount:759,ratingValue:4.4,img:"images/Red-Strip Comfort Slip-on.jpg"},  
-{name:"Urban Black Swoosh",price:245,mrp:1000,off:"76%",ratingCount:701,ratingValue:4.2,img:"images/Urban Black Swoosh.jpg"},  
-{name:"Triple-Strap Easy Wear",price:249,mrp:1049,off:"76%",ratingCount:688,ratingValue:4.1,img:"images/Triple-Strap Easy Wear.jpg"},  
-{name:"Elite Knitted Loafer",price:245,mrp:1000,off:"76%",ratingCount:529,ratingValue:3.8,img:"images/Elite Knitted Loafer.jpg"},  
-{name:"Rugged Denim Walker",price:250,mrp:1075,off:"77%",ratingCount:602,ratingValue:4.0,img:"images/Rugged Denim Walker.jpg"},  
-{name:"Blue Wave Slip-on",price:249,mrp:1049,off:"76%",ratingCount:547,ratingValue:3.9,img:"images/Blue Wave Slip-on.jpg"},  
-{name:"Active Sports Blue",price:250,mrp:1075,off:"77%",ratingCount:768,ratingValue:4.5,img:"images/Active Sports Blue.jpg"}  
-];  
+const products = [
+{
+name:"Premium Boss Edition",
+price:249,
+mrp:1049,
+off:"76%",
+ratingCount:583,
+ratingValue:4.0,
+img:"images/Premium Boss Edition.jpg",
+details:[
+"✔ Premium synthetic leather upper",
+"✔ Office & formal wear shoes",
+"✔ Soft cushioned insole",
+"✔ Strong & durable outsole",
+"✔ Long lasting shine finish"
+]
+},
+
+{
+name:"Royal Polo Classic (Tan)",
+price:250,
+mrp:1075,
+off:"77%",
+ratingCount:712,
+ratingValue:4.2,
+img:"images/Royal Polo Classic (Tan).jpg",
+details:[
+"✔ Classic polo style design",
+"✔ Party & casual wear",
+"✔ Comfortable inner padding",
+"✔ Anti-skid sole grip",
+"✔ Premium tan color finish"
+]
+},
+
+{
+name:"Royal Polo Classic (Black)",
+price:245,
+mrp:1049,
+off:"77%",
+ratingCount:648,
+ratingValue:4.1,
+img:"images/Royal Polo Classic (Black).jpg",
+details:[
+"✔ Elegant black formal shoe",
+"✔ Office & daily wear",
+"✔ Sweat-free inner lining",
+"✔ Durable rubber sole",
+"✔ Easy to clean surface"
+]
+},
+
+{
+name:"Starry Denim Sneaker",
+price:249,
+mrp:1075,
+off:"77%",
+ratingCount:531,
+ratingValue:3.9,
+img:"images/Starry Denim Sneaker.jpg",
+details:[
+"✔ Denim fabric upper design",
+"✔ Youth casual sneaker",
+"✔ Lightweight & breathable",
+"✔ Soft EVA sole",
+"✔ Stylish street look"
+]
+},
+
+{
+name:"Jumpman Street-Vibe",
+price:245,
+mrp:1000,
+off:"76%",
+ratingCount:783,
+ratingValue:4.3,
+img:"images/Jumpman Street-Vibe.jpg",
+details:[
+"✔ Trendy street style sneaker",
+"✔ Sports & casual use",
+"✔ Shock absorb sole",
+"✔ Flexible grip base",
+"✔ Premium sporty finish"
+]
+},
+
+{
+name:"Classic Fashion Navy",
+price:249,
+mrp:1049,
+off:"76%",
+ratingCount:614,
+ratingValue:4.0,
+img:"images/Classic Fashion Navy.jpg",
+details:[
+"✔ Navy blue casual shoes",
+"✔ Daily wear comfort",
+"✔ Breathable inner fabric",
+"✔ Non-slip sole",
+"✔ Stylish modern look"
+]
+},
+
+{
+name:"Red-Strip Comfort Slip-on",
+price:250,
+mrp:1075,
+off:"77%",
+ratingCount:759,
+ratingValue:4.4,
+img:"images/Red-Strip Comfort Slip-on.jpg",
+details:[
+"✔ Easy slip-on design",
+"✔ Red stripe sporty look",
+"✔ Ultra comfort sole",
+"✔ Daily & travel wear",
+"✔ Lightweight construction"
+]
+},
+
+{
+name:"Urban Black Swoosh",
+price:245,
+mrp:1000,
+off:"76%",
+ratingCount:701,
+ratingValue:4.2,
+img:"images/Urban Black Swoosh.jpg",
+details:[
+"✔ Urban black sneaker",
+"✔ Casual & sports style",
+"✔ Breathable mesh lining",
+"✔ High grip sole",
+"✔ Long-lasting comfort"
+]
+},
+
+{
+name:"Triple-Strap Easy Wear",
+price:249,
+mrp:1049,
+off:"76%",
+ratingCount:688,
+ratingValue:4.1,
+img:"images/Triple-Strap Easy Wear.jpg",
+details:[
+"✔ Triple velcro strap design",
+"✔ Easy wear & remove",
+"✔ Senior & daily use",
+"✔ Comfortable cushioned base",
+"✔ Strong strap locking"
+]
+},
+
+{
+name:"Elite Knitted Loafer",
+price:245,
+mrp:1000,
+off:"76%",
+ratingCount:529,
+ratingValue:3.8,
+img:"images/Elite Knitted Loafer.jpg",
+details:[
+"✔ Knitted fabric loafer",
+"✔ Breathable design",
+"✔ Lightweight & flexible",
+"✔ Daily casual wear",
+"✔ Modern premium look"
+]
+},
+
+{
+name:"Rugged Denim Walker",
+price:250,
+mrp:1075,
+off:"77%",
+ratingCount:602,
+ratingValue:4.0,
+img:"images/Rugged Denim Walker.jpg",
+details:[
+"✔ Rugged denim finish",
+"✔ Outdoor & daily walking",
+"✔ Extra grip sole",
+"✔ Shock absorb base",
+"✔ Long durability"
+]
+},
+
+{
+name:"Blue Wave Slip-on",
+price:249,
+mrp:1049,
+off:"76%",
+ratingCount:547,
+ratingValue:3.9,
+img:"images/Blue Wave Slip-on.jpg",
+details:[
+"✔ Wave design slip-on",
+"✔ Comfortable daily wear",
+"✔ Breathable fabric",
+"✔ Flexible sole",
+"✔ Easy to wear"
+]
+},
+
+{
+name:"Active Sports Blue",
+price:250,
+mrp:1075,
+off:"77%",
+ratingCount:768,
+ratingValue:4.5,
+img:"images/Active Sports Blue.jpg",
+details:[
+"✔ Sports running shoes",
+"✔ High energy cushioning",
+"✔ Breathable mesh upper",
+"✔ Strong traction sole",
+"✔ Ideal for gym & running"
+]
+}
+];
   
 const list=document.getElementById("list");  
   
@@ -292,6 +583,34 @@ detailContent.innerHTML=`
 <p>🚚 Fast & Free Deliver
 <p>🔸 Cash On Delivery</p>
 
+<div class="section">
+<h3>Product Details</h3>
+<ul>
+${p.details.map(d=>`<li>${d}</li>`).join("")}
+</ul>
+</div>
+
+<div class="fk-section">
+  <h3>Why Buy From ShopOne?</h3>
+
+  <div class="fk-trust">
+    <div class="fk-item" onclick="fkInfo('delivery')">
+      <i class="fa-solid fa-truck-fast"></i>
+      <p>Fast Delivery</p>
+    </div>
+
+    <div class="fk-item" onclick="fkInfo('cod')">
+      <i class="fa-solid fa-money-bill-wave"></i>
+      <p>Cash on Delivery</p>
+    </div>
+
+    <div class="fk-item" onclick="fkInfo('secure')">
+      <i class="fa-solid fa-shield-halved"></i>
+      <p>Secure Payments</p>
+    </div>
+  </div>
+</div>
+
 <div class="rating-box">  
 <div class="rating-score">  
 <b>${p.ratingValue} ⭐</b><br>  
@@ -324,14 +643,34 @@ ${renderReviews(i)}
 
 </div>
 
+
+<h3 style="margin-top:20px">Similar Products</h3>
+
+<div class="similar-wrap">
+${products.map((x,idx)=>`
+<div class="similar-card" onclick="openPage(${idx})">
+<img src="${x.img}">
+<div class="similar-info">
+<b>${x.name}</b>
+<div style="color:#f59e0b;font-size:12px">
+${starsHTML(x.ratingValue)}
+</div>
+<div class="similar-price">₹${x.price}</div>
+</div>
+</div>
+`).join("")}
+</div>
+
+
 <div class="btn-row">
 <button class="btn" onclick="addToCart(${i})">
-🛒 Add to Cart
+Add to Cart
 </button>
 
 <button class="btn" onclick="order('${p.name}')">
 💬 Order on WhatsApp
 </button>
+
 </div>  
 </div>`;  
 }  
@@ -640,5 +979,21 @@ box.style.display = "block";
 btn.innerText = "Hide reviews";
 }
 }
+
+function fkInfo(type){
+  if(type === 'delivery'){
+    alert("Fast Delivery\n\nDelivered quickly to your doorstep.");
+  }
+
+  if(type === 'cod'){
+    alert("Cash on Delivery\n\nPay after receiving the product.");
+  }
+
+  if(type === 'secure'){
+    alert("Secure Payments\n\n100% safe and protected transactions.");
+  }
+}
+
+
 </script>  </body>  
 </html>
