@@ -209,13 +209,210 @@ color:#111;
 font-weight:bold;
 margin-top:4px;
 }
+
+.size{
+border:1.5px solid #e5e7eb;
+padding:6px 12px;
+border-radius:8px;
+cursor:pointer;
+font-size:13px;
+}
+
+.size.active{
+border-color:#22c55e;
+background:#dcfce7;
+color:#166534;
+font-weight:600;
+}
+
+/* 🔢 QUANTITY BUTTON STYLE */
+.qty-box{
+display:flex;
+align-items:center;
+gap:14px;
+margin-top:8px;
+}
+
+.qty-btn{
+width:36px;
+height:36px;
+border-radius:50%;
+border:none;
+background:#111827;
+color:#fff;
+font-size:20px;
+font-weight:bold;
+cursor:pointer;
+transition:all 0.2s ease;
+}
+
+.qty-btn:hover{
+background:#22c55e;
+transform:scale(1.1);
+}
+
+.qty-btn:active{
+transform:scale(0.95);
+}
+
+.qty-count{
+min-width:32px;
+text-align:center;
+font-size:16px;
+font-weight:600;
+}
+
+/* ===== SLIM MEESHO STYLE BOTTOM BAR ===== */
+.sticky-bar{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:54px;              /* 👈 slim height */
+display:flex;
+gap:8px;
+padding:6px 8px;
+background:#ffffff;
+border-top:1px solid #e5e7eb;
+z-index:1000;
+}
+
+/* COMMON BUTTON */
+.meesho-btn{
+flex:1;
+border:none;
+border-radius:12px;       /* 👈 less round */
+font-size:14px;           /* 👈 slim text */
+font-weight:600;
+cursor:pointer;
+position:relative;
+overflow:hidden;
+transition:transform 0.12s ease;
+}
+
+/* PRESS EFFECT */
+.meesho-btn:active{
+transform:scale(0.96);
+}
+
+/* ADD TO CART */
+.cart-btn{
+background:#ff9f00;
+color:#000;
+}
+
+/* WHATSAPP */
+.wa-btn{
+background:#25d366;
+color:#fff;
+}
+
+/* RIPPLE EFFECT (SOFT) */
+.meesho-btn::after{
+content:"";
+position:absolute;
+top:50%;
+left:50%;
+width:0;
+height:0;
+background:rgba(255,255,255,0.35);
+border-radius:50%;
+transform:translate(-50%,-50%);
+opacity:0;
+}
+
+.meesho-btn.pressed::after{
+animation:ripple 0.45s ease-out;
+}
+
+@keyframes ripple{
+to{
+width:220%;
+height:220%;
+opacity:0;
+}
+}
+
+/* PAGE SAFE SPACE */
+.page{
+padding-bottom:70px;
+}
+
+/* ===== SHOPIFY STYLE ACCOUNT SLIDE PANEL ===== */
+.account-panel{
+position:fixed;
+top:0;
+right:-100%;
+width:85%;
+max-width:320px;
+height:100%;
+background:#fff;
+z-index:1500;
+box-shadow:-4px 0 20px rgba(0,0,0,0.25);
+transition:right 0.35s ease;
+display:flex;
+flex-direction:column;
+}
+
+/* ACTIVE */
+.account-panel.show{
+right:0;
+}
+
+/* HEADER */
+.account-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px;
+border-bottom:1px solid #e5e7eb;
+font-size:16px;
+}
+
+.account-header span{
+cursor:pointer;
+font-size:18px;
+}
+
+/* BODY */
+.account-body{
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+/* BUTTONS */
+.account-btn{
+padding:14px;
+border-radius:12px;
+border:1.5px solid #e5e7eb;
+background:#fff;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+}
+
+.account-btn.primary{
+background:#000;
+color:#fff;
+border:none;
+}
+
+
+
 </style>  
+
+
+
 </head>  
 <body>  
 <header style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px">
 <span style="font-size:20px;font-weight:bold">ShopOne in</span>
 
-<div id="userArea" style="display:flex;gap:15px;align-items:center;font-size:14px">  <span id="loginBtns">  
+<i class="fa-regular fa-user"
+   onclick="openAccount()"
+   style="font-size:20px;cursor:pointer"></i>  <span id="loginBtns">  
 <span onclick="openAuth('signin')" style="cursor:pointer">Sign In</span>  
 <span onclick="openAuth('signup')" style="cursor:pointer;margin-left:8px">Sign Up</span>  
 </span>  <span id="userInfo" style="display:none">  
@@ -277,7 +474,33 @@ Already have account?
 <button class="btn">Proceed to Order</button>  
 </div>  
 </div>  
+
+<!-- SHOPIFY STYLE ACCOUNT PANEL -->
+<div id="accountPanel" class="account-panel">
+
+  <div class="account-header">
+    <b>Account</b>
+    <span onclick="closeAccount()">✕</span>
+  </div>
+
+  <div class="account-body">
+
+    <button class="account-btn primary" onclick="openAuth('signin')">
+      Login
+    </button>
+
+    <button class="account-btn" onclick="openAuth('signup')">
+      Create Account
+    </button>
+
+  </div>
+</div>
+
+
 <script>  
+
+
+
 function starsHTML(r){  
 let full=Math.floor(r), half=r%1>=0.5;  
 let html="";  
@@ -580,6 +803,31 @@ detailContent.innerHTML=`
   
 <p><b>₹${p.price}</b> <span class="old">M.R.P ₹${p.mrp}</span></p>  
 
+<!-- SIZE SELECTION -->
+<div style="margin-top:12px">
+<b>Select Size</b>
+<div id="sizeBox" style="display:flex;gap:10px;margin-top:6px">
+<span class="size" onclick="selectSize(this)">6</span>
+<span class="size" onclick="selectSize(this)">7</span>
+<span class="size" onclick="selectSize(this)">8</span>
+<span class="size" onclick="selectSize(this)">9</span>
+<span class="size" onclick="selectSize(this)">10</span>
+</div>
+</div>
+
+<!-- QUANTITY SELECTOR -->
+<div style="margin-top:14px">
+<b>Quantity</b>
+
+<div class="qty-box">
+<button class="qty-btn" onclick="qtyChange(-1)">−</button>
+
+<span id="qtyVal" class="qty-count">1</span>
+
+<button class="qty-btn" onclick="qtyChange(1)">+</button>
+</div>
+</div>
+
 <p>🚚 Fast & Free Deliver
 <p>🔸 Cash On Delivery</p>
 
@@ -662,14 +910,18 @@ ${starsHTML(x.ratingValue)}
 </div>
 
 
-<div class="btn-row">
-<button class="btn" onclick="addToCart(${i})">
-Add to Cart
-</button>
+<!-- MEESHO STYLE STICKY BAR -->
+<div class="sticky-bar">
 
-<button class="btn" onclick="order('${p.name}')">
-💬 Order on WhatsApp
-</button>
+  <button class="meesho-btn cart-btn" onclick="pressBtn(this);addToCart(${i})">
+    <span>Add to Cart</span>
+  </button>
+
+  <button class="meesho-btn wa-btn" onclick="pressBtn(this);order('${p.name}')">
+    <span>💬 WhatsApp Order</span>
+  </button>
+
+</div>
 
 </div>  
 </div>`;  
@@ -705,6 +957,7 @@ document.getElementById("passError").style.display="none";
 function closeAuth(){  
 document.getElementById("authBox").style.display="none";  
 }  
+closeAccount();
   
 /* ---------- CART ---------- */  
 
@@ -729,7 +982,8 @@ box.innerHTML += `
 <img src="${item.img}" width="60">
 <div>
 <b>${item.name}</b><br>
-₹${item.price} × ${item.qty}
+₹${item.price} × ${item.qty}<br>
+Size: <b>${item.size}</b>
 </div>
 </div>
 `;
@@ -857,29 +1111,42 @@ icon.style.color="grey";
 }
 function addToCart(i){
 
-// ❌ BINA LOGIN → SIGN IN OPEN
-if(localStorage.getItem("loggedIn")!=="yes"){
-openAuth("signin");
-return;
-}
+  // LOGIN CHECK
+  if(localStorage.getItem("loggedIn")!=="yes"){
+    openAuth("signin");
+    return;
+  }
 
-let p = products[i];
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let found = cart.find(x=>x.name===p.name);
+  // SIZE CHECK
+  if(!selectedSize){
+    alert("Please select size");
+    return;
+  }
 
-if(found){
-found.qty++;
-}else{
-cart.push({
-name:p.name,
-price:p.price,
-img:p.img,
-qty:1
-});
-}
+  let p = products[i];
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-localStorage.setItem("cart",JSON.stringify(cart));
-alert("Added to cart");
+  // SAME PRODUCT + SAME SIZE
+  let found = cart.find(x=>x.name === p.name && x.size === selectedSize);
+
+  if(found){
+    found.qty += selectedQty;
+  }else{
+    cart.push({
+      name: p.name,
+      price: p.price,
+      img: p.img,
+      size: selectedSize,
+      qty: selectedQty
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Added to cart");
+
+  // RESET
+  selectedQty = 1;
+  document.getElementById("qtyVal").innerText = 1;
 }
 updateLikes();
 
@@ -993,7 +1260,39 @@ function fkInfo(type){
     alert("Secure Payments\n\n100% safe and protected transactions.");
   }
 }
+function pressBtn(btn){
+btn.classList.add("pressed");
+setTimeout(()=>{
+btn.classList.remove("pressed");
+},300);
+}
+let selectedSize = null;
+let selectedQty = 1;
+
+function selectSize(el){
+document.querySelectorAll(".size").forEach(s=>s.classList.remove("active"));
+el.classList.add("active");
+selectedSize = el.innerText;
+}
+
+function qtyChange(val){
+selectedQty += val;
+if(selectedQty < 1) selectedQty = 1;
+document.getElementById("qtyVal").innerText = selectedQty;
+}
+
+function openAccount(){
+document.getElementById("accountPanel").classList.add("show");
+}
+
+function closeAccount(){
+document.getElementById("accountPanel").classList.remove("show");
+}
 
 
-</script>  </body>  
+
+</script> 
+
+
+</body>  
 </html>
