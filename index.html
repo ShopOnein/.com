@@ -510,10 +510,69 @@ border:none;
   }
 }
 
+/* LEFT SLIDE INFO PANEL */
+.info-panel{
+  position:fixed;
+  top:0;
+  left:-100%;
+  width:90%;
+  max-width:360px;
+  height:100%;
+  background:#fff;
+  z-index:3000;
+  box-shadow:4px 0 20px rgba(0,0,0,0.25);
+  transition:left 0.35s ease;
+  display:flex;
+  flex-direction:column;
+}
+
+.info-panel.show{
+  left:0;
+}
+
+.info-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  border-bottom:1px solid #e5e7eb;
+  font-size:16px;
+}
+
+.info-header span{
+  font-size:18px;
+  cursor:pointer;
+}
+
+.info-body{
+  padding:16px;
+  overflow:auto;
+  font-size:14px;
+  line-height:1.7;
+  color:#111;
+}
+
+.info-body h4{
+  margin-top:14px;
+  margin-bottom:6px;
+}
+
+/* UNIQUE PANEL TITLE */
+.info-header b{
+  font-size:17px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  border-bottom:2px solid #000;
+  padding-bottom:4px;
+}
+
 
 
 
 </style>  
+
+
 
 
 
@@ -557,44 +616,61 @@ border:none;
   <button class="close" onclick="closePage()">X</button>  
   <div id="detailContent"></div>  
 </div>
-
-
-
-
-
-
 <div id="authBox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200">  
-<div style="background:#fff;width:90%;max-width:320px;margin:80px auto;padding:20px;border-radius:12px">  <h3 id="authTitle">Sign In</h3>  <input id="fullName" placeholder="Full Name" style="width:100%;padding:10px;margin:8px 0">
+  <div style="background:#fff;width:90%;max-width:360px;margin:80px auto;padding:20px;border-radius:12px;position:relative">
+    <h3 id="authTitle">Sign In</h3>
 
-<input id="mobile" placeholder="Mobile Number" style="width:100%;padding:10px;margin:8px 0">
+    <!-- LOGIN INPUTS -->
+    <div id="loginFields">
+      <input id="loginEmail" placeholder="Email / Phone" style="width:100%;padding:10px;margin:8px 0">
+      <input id="loginPass" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0">
+      <button class="btn" onclick="submitAuth('login')">Sign In</button>
+      <p style="font-size:13px;text-align:center;margin-top:10px">
+        New user?  
+        <b onclick="openAuth('signup')" style="color:#2563eb;cursor:pointer">Create account</b>
+      </p>
+    </div>
 
-<input id="email" placeholder="Email" style="width:100%;padding:10px;margin:8px 0">
+    <!-- SIGNUP INPUTS -->
+    <div id="signupFields" style="display:none">
+      <input id="signupName" placeholder="Full Name" style="width:100%;padding:10px;margin:8px 0">
+      <input id="signupEmail" placeholder="Email / Phone" style="width:100%;padding:10px;margin:8px 0">
+      <input id="signupAddress"
+ placeholder="House No, Street, Area"
+ style="width:100%;padding:10px;margin:8px 0">
 
-<input id="house" placeholder="House / Street" style="width:100%;padding:10px;margin:8px 0">
+<input id="signupPincode"
+ placeholder="Pincode"
+ maxlength="6"
+ inputmode="numeric"
+ style="width:100%;padding:10px;margin:8px 0"
+ onkeyup="fetchCityFromPincode(this.value)">
+ 
+ <!-- 🔴 STATE FIELD -->
+<input id="signupState"
+ placeholder="State"
+ style="width:100%;padding:10px;margin:8px 0">
+ 
+      <input id="signupPass" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0">
+      <input id="signupConfirm" type="password" placeholder="Confirm Password" style="width:100%;padding:10px;margin:8px 0">
+      <small id="passError" style="color:red;display:none">Passwords do not match</small>
+      <button class="btn" onclick="submitAuth('signup')">Create Account</button>
+      <button class="btn" style="background:#eee;color:#000;margin-top:6px" onclick="openAuth('signin')">Back</button>
+    </div>
 
-<input id="city" placeholder="City" style="width:100%;padding:10px;margin:8px 0">
+    <!-- CLOSE BUTTON -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+  <h3 id="authTitle">Sign In</h3>
+  <span onclick="closeAuth()"
+    style="font-size:18px;cursor:pointer;font-weight:bold">✕</span>
+</div>
+  </div>  
+</div>
 
-<input id="pincode" placeholder="Pincode" style="width:100%;padding:10px;margin:8px 0">  
-<input id="pass1" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0">  
-<input id="confirmPass" type="password" placeholder="Confirm Password"  
-style="width:100%;padding:10px;margin:8px 0;display:none">  <small id="passError" style="color:red;display:none">Passwords do not match</small>
-
-<p id="signupLink" style="font-size:13px;text-align:center">  
-New user?  
-<b onclick="openAuth('signup')" style="color:#2563eb;cursor:pointer">Create account</b>  
-</p>  <p id="signinLink" style="font-size:13px;text-align:center;display:none">  
-Already have account?  
-<b onclick="openAuth('signin')" style="color:#2563eb;cursor:pointer">Sign In</b>  
-</p>  <button class="btn" onclick="submitAuth()">Continue</button>
-<button class="btn" style="background:#eee;color:#000" onclick="closeAuth()">Close</button>
-
-</div>  
-</div>  <!-- CART -->  <div id="cartBox" style="display:none;position:fixed;inset:0;background:#fff;z-index:200">  
+<!-- CART -->  <div id="cartBox" style="display:none;position:fixed;inset:0;background:#fff;z-index:200">  
 <button class="close" onclick="closeCart()">X</button>  
 <div style="padding:20px">  
-<h3>Your Cart</h3>
-
-<div id="cartItems"></div>
+<h3>Your Cart</h3>closeCart<div id="cartItems"></div>
 
 <h3>Total: ₹<span id="cartTotal">0</span></h3>
 
@@ -1136,8 +1212,9 @@ detailContent.innerHTML=`
 </div>
 </div>
 
-<p>🚚 Fast & Free Deliver
-<p>🔸 Cash On Delivery</p>
+<div style="color: #FF4500; background-color: #FFF5EE; padding: 10px; border-radius: 5px; border: 1px dashed #FF4500; display: inline-block;">
+  <span style="font-weight: bold;">🔥 Rate & Earn ₹50 Cashback on this order after delivery!</span>
+</div>
 
 <!-- SIMPLE MEESHO STYLE DETAILS -->
 <div class="simple-spec">
@@ -1299,27 +1376,72 @@ window.open("https://wa.me/917879266424?text=Order%20for%20"+name);
   
 /* ---------- AUTH ---------- */  
   
-function openAuth(type){  
-document.getElementById("authBox").style.display="block";  
-document.getElementById("authTitle").innerText =  
-type==="signup" ? "Sign Up" : "Sign In";  
-  
-document.getElementById("confirmPass").style.display =  
-type==="signup" ? "block" : "none";  
-  
-document.getElementById("signinLink").style.display =  
-type==="signup" ? "block" : "none";  
-  
-document.getElementById("signupLink").style.display =  
-type==="signup" ? "none" : "block";  
-  
-document.getElementById("passError").style.display="none";  
-}  
-  
-function closeAuth(){  
-document.getElementById("authBox").style.display="none";  
-}  
-closeAccount();
+function openAuth(type){
+  // Auth popup दिखाओ
+  document.getElementById("authBox").style.display = "block";
+
+  // Account Panel को बंद कर दो
+  document.getElementById("accountPanel").classList.remove("show");
+
+  if(type === "signup"){
+    document.getElementById("authTitle").innerText = "Sign Up";
+    document.getElementById("loginFields").style.display = "none";
+    document.getElementById("signupFields").style.display = "block";
+    document.getElementById("passError").style.display="none";
+  } else {
+    document.getElementById("authTitle").innerText = "Sign In";
+    document.getElementById("loginFields").style.display = "block";
+    document.getElementById("signupFields").style.display = "none";
+  }
+}
+
+function submitAuth(mode){
+  if(mode === "login"){
+    let email = document.getElementById("loginEmail").value.trim();
+    let pass = document.getElementById("loginPass").value.trim();
+
+    if(!email || !pass){ alert("Fill all fields"); return; }
+
+    let saved = JSON.parse(localStorage.getItem("user")) || {};
+    if(saved.email !== email || saved.password !== pass){
+      alert("Invalid login details"); return;
+    }
+
+    localStorage.setItem("loggedIn","yes");
+    localStorage.setItem("userEmail", email);
+    alert("Login successful");
+    closeAuth();
+
+  } else if(mode === "signup"){
+    let name = document.getElementById("signupName").value.trim();
+let email = document.getElementById("signupEmail").value.trim();
+let pass = document.getElementById("signupPass").value.trim();
+let cpass = document.getElementById("signupConfirm").value.trim();
+
+let address = document.getElementById("signupAddress").value.trim();
+
+let pincode = document.getElementById("signupPincode").value.trim();
+
+
+
+    localStorage.setItem("user", JSON.stringify({
+  name,
+  email,
+  password: pass,
+  address,
+  city,
+  pincode
+}));
+    localStorage.setItem("loggedIn","yes");
+    localStorage.setItem("userEmail", email);
+    alert("Signup successful");
+    closeAuth();
+  }
+}
+
+function closeAuth(){
+  document.getElementById("authBox").style.display = "none";
+}
   
 /* ---------- CART ---------- */  
 
@@ -1659,6 +1781,126 @@ function shareProduct(name){
     alert("Sharing not supported on this device");
   }
 }
+ 
+ 
+function openInfo(type){
+  let title = "";
+  let content = "";
+
+  if(type==="shipping"){
+    title = "Shipping Policy";
+    content = `
+    <p>We ensure safe and reliable delivery to your doorstep.</p>
+    <h4>Order Process</h4>
+    <p>All orders are placed via WhatsApp (+91 7879266424).</p>
+    <h4>Tracking</h4>
+    <p>Tracking ID shared after payment screenshot verification.</p>
+    <h4>Dispatch Time</h4>
+    <p>24–48 hours after payment confirmation.</p>
+    <h4>Delivery Time</h4>
+    <p>5–7 business days.</p>
+    <h4>Partial COD</h4>
+    <p>50% advance & balance on delivery.</p>`;
+  }
+
+  if(type==="return"){
+    title = "Return & Refund Policy";
+    content = `
+    <p>Our refund policy is transparent and fair.</p>
+    <h4>Cancellation / Non-Acceptance</h4>
+    <p>75% of advance deducted after dispatch.</p>
+    <h4>Cashback Adjustment</h4>
+    <p>₹50 cashback (if received) will be deducted.</p>
+    <h4>Damaged Products</h4>
+    <p>Unboxing video required within 24 hours.</p>
+    <h4>Refund Time</h4>
+    <p>5–7 working days.</p>`;
+  }
+
+  if(type==="terms"){
+    title = "Terms of Service";
+    content = `
+    <p>By shopping with ShopOneIn you agree:</p>
+    <ul>
+      <li>50% advance payment mandatory</li>
+      <li>Payment screenshot required</li>
+      <li>Order refusal = shipping cost payable</li>
+      <li>Images/videos are reference based</li>
+    </ul>`;
+  }
+
+  if(type==="privacy"){
+    title = "Privacy Policy";
+    content = `
+    <p>Your data security is our priority.</p>
+    <ul>
+      <li>Name, address & WhatsApp collected</li>
+      <li>Used only for order updates</li>
+      <li>No data selling to third parties</li>
+      <li>Secure UPI / Bank payments</li>
+    </ul>`;
+  }
+
+  if(type==="about"){
+    title = "About Us";
+    content = `
+    <p>ShopOneIn is based in Raipur, Chhattisgarh.</p>
+    <p>We operate via WhatsApp for better trust and service.</p>
+    <p>Our 50% advance model ensures genuine orders.</p>`;
+  }
+
+  if(type==="faq"){
+    title = "FAQs";
+    content = `
+    <h4>Why 50% advance?</h4>
+    <p>To confirm genuine orders.</p>
+    <h4>How to order?</h4>
+    <p>WhatsApp us with payment screenshot.</p>
+    <h4>₹50 Cashback?</h4>
+    <p>After feedback on WhatsApp.</p>
+    <h4>Don’t like product?</h4>
+    <p>Check return policy.</p>`;
+  }
+
+  if(type==="contact"){
+    title = "Contact Us";
+    content = `
+    <p><b>ShopOneIn</b></p>
+    <p>Gol Bazar, Near City Kotwali,<br>Raipur, Chhattisgarh – 492001</p>
+    <p><b>WhatsApp:</b> +91 7879266424</p>
+    <p><b>Email:</b> oneanextall@gmail.com</p>
+    <p><b>Support:</b> Mon–Fri 10AM–6PM</p>`;
+  }
+
+  document.getElementById("infoTitle").innerHTML =
+"⟪ " + title.toUpperCase() + " ⟫";
+  document.getElementById("infoContent").innerHTML = content;
+  document.getElementById("infoPanel").classList.add("show");
+}
+
+function closeInfo(){
+  document.getElementById("infoPanel").classList.remove("show");
+}
+
+function fetchCityFromPincode(pin){
+  if(pin.length !== 6) return;
+
+  fetch("https://api.postalpincode.in/pincode/" + pin)
+    .then(res => res.json())
+    .then(data => {
+      if(data[0].Status === "Success"){
+        let post = data[0].PostOffice[0];
+        window.detectedCity = post.District;
+      } else {
+        alert("Invalid Pincode");
+        window.detectedCity = "";
+      }
+    })
+    .catch(() => {
+      alert("Pincode service not available");
+    });
+}
+
 
 
 
@@ -1675,15 +1917,15 @@ function shareProduct(name){
     <!-- Help & Support -->
     <div class="footer-box">
       <h4>Help & Support</h4>
-      <ul>
-        <li><a href="shipping-policy.html">Shipping Policy</a></li>
-        <li><a href="return-refund.html">Return & Refund Policy</a></li>
-        <li><a href="terms.html">Terms of Service</a></li>
-        <li><a href="privacy.html">Privacy Policy</a></li>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="faqs.html">FAQs</a></li>
-        <li><a href="contact.html">Contact Us</a></li>
-      </ul>
+     <ul>
+  <li><a href="javascript:void(0)" onclick="openInfo('shipping')">Shipping Policy</a></li>
+  <li><a href="javascript:void(0)" onclick="openInfo('return')">Return & Refund Policy</a></li>
+  <li><a href="javascript:void(0)" onclick="openInfo('terms')">Terms of Service</a></li>
+  <li><a href="javascript:void(0)" onclick="openInfo('privacy')">Privacy Policy</a></li>
+  <li><a href="javascript:void(0)" onclick="openInfo('about')">About Us</a></li>
+  <li><a href="javascript:void(0)" onclick="openInfo('faq')">FAQs</a></li>
+  <li><a href="javascript:void(0)" onclick="openInfo('contact')">Contact Us</a></li>
+</ul>
     </div>
 
 <!-- Contact Info -->
@@ -1712,6 +1954,24 @@ function shareProduct(name){
     2026 ShopOne In | 100% Tested
   </div>
 
+
+
 </footer>
+
+
+
+
+<!-- LEFT SLIDE INFO PANEL -->
+<div id="infoPanel" class="info-panel">
+  <div class="info-header">
+    <b id="infoTitle">⟪ TITLE ⟫</b>
+    <span onclick="closeInfo()">✕</span>
+  </div>
+  <div class="info-body" id="infoContent"></div>
+</div>
+
+
+
+
 </body>  
 </html>
