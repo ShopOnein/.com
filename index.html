@@ -681,9 +681,10 @@ border:none;
   <div style="display:flex;gap:18px;align-items:center">
 
     <!-- USER ICON -->
-    <i class="fa-regular fa-user"
-       onclick="openAccount()"
-       style="font-size:20px;cursor:pointer"></i>
+    <div id="userStatus" onclick="openAccount()" style="cursor:pointer; display: flex; align-items: center;">
+  <i class="fa-regular fa-user" style="font-size:20px"></i>
+</div>
+
 
     <!-- ADD TO CART 🛍️ -->
         <i class="fa-solid fa-bag-shopping"
@@ -801,24 +802,17 @@ border:none;
 
 <!-- SHOPIFY STYLE ACCOUNT PANEL -->
 <div id="accountPanel" class="account-panel">
-
   <div class="account-header">
     <b>Account</b>
     <span onclick="closeAccount()">✕</span>
   </div>
 
-  <div class="account-body">
-
-    <button class="account-btn primary" onclick="openAuth('signin')">
-      Login
-    </button>
-
-    <button class="account-btn" onclick="openAuth('signup')">
-      Create Account
-    </button>
-
+  <div class="account-body" id="accountBody">
+    <button class="account-btn primary" onclick="openAuth('signin')">Login</button>
+    <button class="account-btn" onclick="openAuth('signup')">Create Account</button>
   </div>
 </div>
+
 
 
 <script>  
@@ -1541,18 +1535,20 @@ function submitAuth(mode){
 
     localStorage.setItem("loggedIn","yes");
     localStorage.setItem("userEmail", email);
-    alert("Login successful");
+    
+    // 🔥 Naya: UI Update call
+    updateHeaderUI(); 
+    alert("Login successful!");
     closeAuth();
 
   } else if(mode === "signup"){
-        // --- NAYA SIGNUP LOGIC ---
     let name = document.getElementById("signupName").value.trim();
     let email = document.getElementById("signupEmail").value.trim();
     let pass = document.getElementById("signupPass").value.trim();
     let address = document.getElementById("signupAddress").value.trim();
     let pincode = document.getElementById("signupPincode").value.trim();
-    let state = document.getElementById("signupState").value.trim(); // State field
-    let city = window.detectedCity || ""; // Pincode se aayi city
+    let state = document.getElementById("signupState").value.trim();
+    let city = window.detectedCity || "";
 
     if(!name || !email || !pass || !pincode){
        alert("Zaroori jankari bharein!");
@@ -1560,21 +1556,19 @@ function submitAuth(mode){
     }
 
     localStorage.setItem("user", JSON.stringify({
-      name: name,
-      email: email,
-      password: pass,
-      address: address,
-      city: city,
-      pincode: pincode,
-      state: state
+      name: name, email: email, password: pass, address: address, city: city, pincode: pincode, state: state
     }));
 
     localStorage.setItem("loggedIn","yes");
     localStorage.setItem("userEmail", email);
-    alert("Signup successful");
+    
+    // 🔥 Naya: UI Update call
+    updateHeaderUI();
+    alert("Signup successful!");
     closeAuth();
   }
 }
+
 
 function closeAuth(){
   document.getElementById("authBox").style.display = "none";
@@ -2010,13 +2004,20 @@ function toggleShare(){
 }
 function checkoutWhatsApp() {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  
+  let customer = JSON.parse(localStorage.getItem("user")) || {};
+  let isLoggedIn = localStorage.getItem("loggedIn");
+
   if (cart.length === 0) {
     alert("Aapka cart khali hai!");
     return;
   }
 
-  let customer = JSON.parse(localStorage.getItem("user")) || {};
+  if (isLoggedIn !== "yes") {
+    alert("Kripya pehle Login karein!");
+    openAuth('signin');
+    return;
+  }
+
   let msg = "*Naya Order - ShopOne In*%0A";
   msg += "--------------------------%0A";
 
@@ -2029,17 +2030,71 @@ function checkoutWhatsApp() {
   });
 
   msg += "--------------------------%0A";
-  msg += `*Total Amount: ₹${total}*%0A`;
+  msg += `*Total Amount: ₹${total}*%0A%0A`;
   
-  // Isse customer ki saari details WhatsApp par aayengi
-  if(customer.name) {
-    msg += `%0A*Delivery Details:*%0A👤 Name: ${customer.name}%0A📍 Address: ${customer.address}%0A🏙️ City: ${customer.city}%0A🗺️ State: ${customer.state}%0A📌 Pincode: ${customer.pincode}`;
-  } else {
-    msg += `%0A_(Customer login nahi hai)_`;
-  }
+  msg += "*Delivery Details:*%0A";
+  msg += `👤 Name: ${customer.name}%0A`;
+  msg += `📞 Contact: ${customer.email}%0A`;
+  msg += `📍 Address: ${customer.address}%0A`;
+  msg += `🏙️ City: ${customer.city}%0A`;
+  msg += `🗺️ State: ${customer.state}%0A`;
+  msg += `📌 Pincode: ${customer.pincode}%0A`;
+  msg += "--------------------------";
 
   window.open(`https://wa.me/917879266424?text=${msg}`);
 }
+
+
+function updateHeaderUI() {
+  const userStatus = document.getElementById("userStatus");
+  const panelBody = document.getElementById("accountBody");
+  const isLoggedIn = localStorage.getItem("loggedIn");
+  const userData = JSON.parse(localStorage.getItem("user"));
+
+  if (isLoggedIn === "yes" && userData) {
+    let initial = userData.name.charAt(0).toUpperCase();
+    
+    // 1. Bahar ka Icon badlein
+    userStatus.innerHTML = `
+      <div style="width:32px; height:32px; background:#2874f0; color:#fff; border-radius:50%; 
+      display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        ${initial}
+      </div>`;
+
+    // 2. Account Panel ke andar ki details badlein
+    panelBody.innerHTML = `
+      <div style="text-align:center; padding:10px 0;">
+        <div style="width:60px; height:60px; background:#f3f4f6; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:24px; font-weight:bold; color:#2874f0; border:2px solid #2874f0;">
+          ${initial}
+        </div>
+        <p style="margin:0; font-weight:bold; font-size:18px;">${userData.name}</p>
+        <p style="margin:5px 0 15px; color:#666; font-size:13px;">${userData.email}</p>
+        <hr style="border:0; border-top:1px solid #eee; margin-bottom:15px;">
+        <button class="account-btn" onclick="logout()" style="width:100%; color:#d32f2f; border-color:#d32f2f;">Logout</button>
+      </div>
+    `;
+  } else {
+    // Default (Logged Out State)
+    userStatus.innerHTML = `<i class="fa-regular fa-user" style="font-size:20px"></i>`;
+    panelBody.innerHTML = `
+      <button class="account-btn primary" onclick="openAuth('signin')">Login</button>
+      <button class="account-btn" onclick="openAuth('signup')">Create Account</button>
+    `;
+  }
+}
+
+// LOGOUT FUNCTION
+function logout() {
+  localStorage.removeItem("loggedIn");
+  localStorage.removeItem("userEmail");
+  // Note: user ka data (name/address) hum delete nahi kar rahe taaki next login pe kaam aaye, 
+  // sirf login status 'yes' ko hata rahe hain.
+  updateHeaderUI();
+  closeAccount();
+  alert("Logged out successfully!");
+  location.reload(); // UI ko fresh karne ke liye
+}
+
 
 
 
