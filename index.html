@@ -1496,9 +1496,34 @@ function closePage(){
 detail.style.display="none";  
 }  
   
-function order(name){  
-window.open("https://wa.me/917879266424?text=Order%20for%20"+name);  
-}  
+function order(name) {
+  let size = selectedSize || "Not Selected";
+  let qty = selectedQty;
+  let isLoggedIn = localStorage.getItem("loggedIn");
+  let customer = JSON.parse(localStorage.getItem("user")) || {};
+
+  let msg = "*Naya Order - ShopOne In*%0A";
+  msg += "--------------------------%0A";
+  msg += `*Product:* ${name}%0A`;
+  msg += `👟 *Size:* ${size}%0A`;
+  msg += `🔢 *Qty:* ${qty}%0A`;
+
+  // Agar login hai toh details add karo
+  if (isLoggedIn === "yes" && customer.name) {
+    msg += "--------------------------%0A";
+    msg += "*Customer Details:*%0A";
+    msg += `👤 Name: ${customer.name}%0A`;
+    msg += `📞 Contact: ${customer.email}%0A`;
+    msg += `📍 Address: ${customer.address}, ${customer.city}, ${customer.state} - ${customer.pincode}%0A`;
+  } else {
+    msg += "%0A_(Note: Customer not logged in)_%0A";
+  }
+  
+  msg += "--------------------------";
+
+  window.open(`https://wa.me/917879266424?text=${msg}`);
+}
+
   
 /* ---------- AUTH ---------- */  
   
