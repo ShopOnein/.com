@@ -6,7 +6,10 @@
 
 
 
+
 <style>  
+
+
 
 
 .product-title-row{
@@ -582,40 +585,45 @@ border:none;
    PRODUCT GRID FIX
    ========================= */
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:12px;
-  padding:12px;
+/* Modern Grid & Card Style */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Mobile pe 2 products ek saath */
+  gap: 12px;
+  padding: 12px;
+  background: #f4f4f4;
 }
 
-/* 💻 Desktop – 4 products */
-@media (min-width:1024px){
-  .grid{
-    grid-template-columns:repeat(4, 1fr);
-  }
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(4, 1fr); } /* Desktop pe 4 */
 }
 
-/* 📱 Mobile – 2 products */
-@media (max-width:600px){
-  .grid{
-    grid-template-columns:repeat(2, 1fr);
-  }
+.card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Product card */
-.product{
-  background:#fff;
-  border-radius:10px;
-  padding:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+.card img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  background: #f9f9f9;
 }
-@media (max-width:600px){
-  .product img{
-    height:140px;
-    object-fit:contain;
-  }
+
+.info { padding: 10px; flex-grow: 1; }
+.title { 
+  font-size: 13px; 
+  font-weight: 500; 
+  height: 38px; 
+  overflow: hidden; 
+  color: #333;
 }
+
 
 .review-photos{
   display:flex;
@@ -631,11 +639,28 @@ border:none;
   border:1px solid #ddd;
 }
 
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  background: #eee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #555;
+  font-size: 14px;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+}
+
+
 
 
 
 
 </style>  
+
 
 
 
@@ -767,7 +792,10 @@ border:none;
 
 <h3>Total: ₹<span id="cartTotal">0</span></h3>
 
-<button class="btn">Proceed to Order</button>  
+<button class="btn" style="background:#25d366; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="checkoutWhatsApp()">
+  <i class="fab fa-whatsapp"></i> Order on WhatsApp
+</button>
+
 </div>  
 </div>  
 
@@ -1275,39 +1303,21 @@ detailContent.innerHTML=`
 </div>
 <div class="stars">${starsHTML(p.ratingValue)} <span>| ${p.ratingCount}</span></div>  
   
-<!-- PRICE SECTION (FLIPKART STYLE) -->
-<div style="margin:12px 0">
-
-  <!-- BIG PRICE -->
-  <div style="
-    font-size:28px;
-    font-weight:700;
-    color:#111827;
-  ">
-    ₹${p.price}
-  </div>
-
-  <!-- MRP + OFF -->
-  <div style="
-    display:flex;
-    gap:10px;
-    align-items:center;
-    font-size:14px;
-    margin-top:4px;
-  ">
-    <span style="color:#6b7280;text-decoration:line-through">
-      ₹${p.mrp}
-    </span>
-
-    <span style="
-      color:#16a34a;
-      font-weight:700;
-    ">
+<div style="background:#f9fafb; padding:15px; border-radius:12px; border:1px solid #e5e7eb; margin:15px 0;">
+  <div style="display:flex; align-items:baseline; gap:12px">
+    <span style="font-size:32px; font-weight:900; color:#111827">₹${p.price}</span>
+    <span style="text-decoration:line-through; color:#9ca3af; font-size:16px">₹${p.mrp}</span>
+    <span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:14px; padding:2px 8px; border-radius:6px">
       ${p.off} OFF
     </span>
   </div>
-
+  
+  <div style="margin-top:8px; display:flex; align-items:center; gap:6px; color:#dc2626; font-size:13px; font-weight:600">
+    <i class="fa-solid fa-clock-rotate-left"></i> 
+    <span>Lowest price in last 30 days! Order fast.</span>
+  </div>
 </div>
+
 
 <!-- SIZE SELECTION -->
 <div style="margin-top:12px">
@@ -1535,25 +1545,30 @@ function submitAuth(mode){
     closeAuth();
 
   } else if(mode === "signup"){
+        // --- NAYA SIGNUP LOGIC ---
     let name = document.getElementById("signupName").value.trim();
-let email = document.getElementById("signupEmail").value.trim();
-let pass = document.getElementById("signupPass").value.trim();
-let cpass = document.getElementById("signupConfirm").value.trim();
+    let email = document.getElementById("signupEmail").value.trim();
+    let pass = document.getElementById("signupPass").value.trim();
+    let address = document.getElementById("signupAddress").value.trim();
+    let pincode = document.getElementById("signupPincode").value.trim();
+    let state = document.getElementById("signupState").value.trim(); // State field
+    let city = window.detectedCity || ""; // Pincode se aayi city
 
-let address = document.getElementById("signupAddress").value.trim();
-
-let pincode = document.getElementById("signupPincode").value.trim();
-
-
+    if(!name || !email || !pass || !pincode){
+       alert("Zaroori jankari bharein!");
+       return;
+    }
 
     localStorage.setItem("user", JSON.stringify({
-  name,
-  email,
-  password: pass,
-  address,
-  city,
-  pincode
-}));
+      name: name,
+      email: email,
+      password: pass,
+      address: address,
+      city: city,
+      pincode: pincode,
+      state: state
+    }));
+
     localStorage.setItem("loggedIn","yes");
     localStorage.setItem("userEmail", email);
     alert("Signup successful");
@@ -1598,71 +1613,11 @@ Size: <b>${item.size}</b>
 document.getElementById("cartTotal").innerText = total;
 }
 
-
   
 function closeCart(){  
 document.getElementById("cartBox").style.display="none";  
 }  
   
-/* ---------- LOGIN / SIGNUP LOGIC ---------- */  
-  
-function submitAuth(){
-
-let mode = document.getElementById("authTitle").innerText;
-
-let user = {
-name: document.getElementById("fullName")?.value.trim(),
-mobile: document.getElementById("mobile")?.value.trim(),
-email: document.getElementById("email").value.trim(),
-house: document.getElementById("house")?.value.trim(),
-city: document.getElementById("city")?.value.trim(),
-pincode: document.getElementById("pincode")?.value.trim(),
-password: document.getElementById("pass1").value
-};
-
-let cpass = document.getElementById("confirmPass").value;
-
-/* ---------- SIGN UP ---------- */
-if(mode === "Sign Up"){
-
-if(!user.name || !user.mobile || !user.email || !user.house || !user.city || !user.pincode || !user.password){
-alert("Please fill all fields");
-return;
-}
-
-if(user.password !== cpass){
-document.getElementById("passError").style.display="block";
-return;
-}
-
-localStorage.setItem("user", JSON.stringify(user));
-}
-
-/* ---------- SIGN IN ---------- */
-if(mode === "Sign In"){
-
-if(!user.email || !user.password){
-alert("Please fill all fields");
-return;
-}
-
-let saved = JSON.parse(localStorage.getItem("user"));
-
-if(!saved || saved.email !== user.email || saved.password !== user.password){
-alert("Invalid login details");
-return;
-}
-}
-
-/* ---------- LOGIN SUCCESS ---------- */
-localStorage.setItem("loggedIn","yes");
-localStorage.setItem("userEmail",user.email);
-
-closeAuth();
-checkLogin();
-}
-  
-/* ---------- LOGIN STATE ---------- */  
   
 function checkLogin(){
   // Account panel already handles login UI
@@ -1807,30 +1762,35 @@ return final;
 }
 
 function renderReviews(pid){
-let data = getProductReviews(pid);
+  let data = getProductReviews(pid);
 
-return data.map(r=>{
-let stars = "★".repeat(r.stars)+"☆".repeat(5-r.stars);
-let time =
-r.days === 0 ? "Today" :
-r.days === 1 ? "1 day ago" :
-r.days + " days ago";
+  return data.map(r=>{
+    let stars = "★".repeat(r.stars)+"☆".repeat(5-r.stars);
+    let time = r.days === 0 ? "Today" : r.days === 1 ? "1 day ago" : r.days + " days ago";
+    
+    // Naam ka pehla akshar nikalne ke liye (Avatar ke liye)
+    let initial = r.name.charAt(0).toUpperCase();
 
-return `
-<div class="review">
-<div>
-<div class="review-name">
-${r.name}
-<span class="verified">✔ verified</span>
-</div>
-<div style="color:#f59e0b;font-size:12px">${stars}</div>
-<div class="review-text">${r.text}</div>
-<div class="review-time">${time}</div>
-</div>
-</div>
-`;
-}).join("");
+    return `
+    <div class="review">
+      <div class="review-avatar">
+        ${initial}
+      </div>
+
+      <div style="flex:1">
+        <div class="review-name">
+          ${r.name}
+          <span class="verified">✔ verified</span>
+        </div>
+        <div style="color:#f59e0b;font-size:12px">${stars}</div>
+        <div class="review-text">${r.text}</div>
+        <div class="review-time">${time}</div>
+      </div>
+    </div>
+    `;
+  }).join("");
 }
+
 function toggleReviews(){
 let box = document.getElementById("reviewBox");
 let btn = document.getElementById("reviewBtn");
@@ -1843,6 +1803,7 @@ box.style.display = "block";
 btn.innerText = "Hide reviews";
 }
 }
+
 
 function fkInfo(type){
 
@@ -2047,6 +2008,39 @@ function toggleShare(){
     alert("Link copy ho gaya. Instagram app me paste karein.");
   }
 }
+function checkoutWhatsApp() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  
+  if (cart.length === 0) {
+    alert("Aapka cart khali hai!");
+    return;
+  }
+
+  let customer = JSON.parse(localStorage.getItem("user")) || {};
+  let msg = "*Naya Order - ShopOne In*%0A";
+  msg += "--------------------------%0A";
+
+  let total = 0;
+  cart.forEach((item, idx) => {
+    msg += `*${idx + 1}. ${item.name}*%0A`;
+    msg += `👟 Size: ${item.size} | Qty: ${item.qty}%0A`;
+    msg += `💰 Price: ₹${item.price}%0A%0A`;
+    total += item.price * item.qty;
+  });
+
+  msg += "--------------------------%0A";
+  msg += `*Total Amount: ₹${total}*%0A`;
+  
+  // Isse customer ki saari details WhatsApp par aayengi
+  if(customer.name) {
+    msg += `%0A*Delivery Details:*%0A👤 Name: ${customer.name}%0A📍 Address: ${customer.address}%0A🏙️ City: ${customer.city}%0A🗺️ State: ${customer.state}%0A📌 Pincode: ${customer.pincode}`;
+  } else {
+    msg += `%0A_(Customer login nahi hai)_`;
+  }
+
+  window.open(`https://wa.me/917879266424?text=${msg}`);
+}
+
 
 
 
